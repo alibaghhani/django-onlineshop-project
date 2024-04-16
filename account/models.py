@@ -15,7 +15,8 @@ class User(AbstractUser):
 
 
     email_validator = RegexValidator(
-        regex = r"^[a-zA-Z0-9._%+-]+@gmail\.com$"
+        regex = r"^[a-zA-Z0-9._%+-]+@gmail\.com$",
+        message = 'لطفا یک ایمیل درست وارد کنید'
     )
     # phone_number_validator = RegexValidator(
     #     regex = r"^09[0|1|2|3][0-9]{8}$"
@@ -23,7 +24,7 @@ class User(AbstractUser):
 
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
-    email = models.EmailField(max_length=250,validators=[email_validator])
+    email = models.EmailField(max_length=250,validators=[email_validator],unique=True)
     username = None
 
     #phone_number = models.CharField(max_length=250,validators=[phone_number_validator])
