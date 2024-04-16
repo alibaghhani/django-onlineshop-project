@@ -15,4 +15,31 @@ class TimeStampMixin(models.Model):
     updated_at = models.DateTimeField(auto_now=True,editable=False)
     expired_at = models.DateTimeField(auto_now=True,editable=False)
 
+    class Meta:
+        abstract = True
+
+class LogicalDeleteMixin(models.Model):
+    """
+    logical delete mixin for soft delete
+
+
+    -----field-----
+    is_active = models.BooleanField()
+    is_deleted = models.BooleanField()
+    """
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+
+    def delete(self, using=None, keep_parents=False):
+        self.is_deleted = True
+        self.save(update_fields=["is_deleted"])
+
+    def deactivate(self):
+        self.is_active = False
+        self.save(update_fields=["is_active"])
+
+    class Meta:
+        abstract = True
+
+
 
