@@ -27,6 +27,9 @@ class User(AbstractUser):
     email = models.EmailField(max_length=250,validators=[email_validator],unique=True)
     username = None
 
+    is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+
     #phone_number = models.CharField(max_length=250,validators=[phone_number_validator])
 
     USERNAME_FIELD = 'email'
