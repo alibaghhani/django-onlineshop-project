@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "django-shop-final-project"
+version = "0.1.0"
+description = ""
+authors = ["alibaghani <baghaniali2006@gmail.com>"]
+readme = "README.md"
+packages = [{include = "django_shop_final_project"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
