@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 from core.models import TimeStampMixin,LogicalDeleteMixin
+from .manager import UserManager
+
 # Create your models here.
 class User(AbstractUser):
     """
@@ -25,15 +28,16 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     email = models.EmailField(max_length=250,validators=[email_validator],unique=True)
-    username = None
 
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
     #phone_number = models.CharField(max_length=250,validators=[phone_number_validator])
 
+    objects = UserManager()
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name','last_name']
 
     def __str__(self):
-        return self.first_name
+        return f"{self.first_name} {self.last_name}"
