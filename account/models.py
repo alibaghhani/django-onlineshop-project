@@ -43,6 +43,10 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
     class Address(models.Model):
+        """
+        address model for adding user's addresses
+        """
+
         costumer = models.ForeignKey('User',on_delete=models.CASCADE,related_name='costumer_address')
         province = models.CharField(max_length=25)
         city = models.CharField(max_length=30)
