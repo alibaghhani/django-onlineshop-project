@@ -42,21 +42,21 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-    class Address(models.Model):
-        """
-        address model for adding user's addresses
-        """
+class Address(models.Model):
+    """
+    address model for adding user's addresses
+    """
 
-        costumer = models.ForeignKey('User',on_delete=models.CASCADE,related_name='costumer_address')
-        province = models.CharField(max_length=25)
-        city = models.CharField(max_length=30)
-        street = models.CharField(max_length=250)
-        alley = models.CharField(max_length=250)
-        house_number = models.CharField(max_length=4)
-        full_address = models.CharField(max_length=250)
+    costumer = models.ForeignKey(User,on_delete=models.CASCADE,related_name='costumer_address')
+    province = models.CharField(max_length=25)
+    city = models.CharField(max_length=30)
+    street = models.CharField(max_length=250)
+    alley = models.CharField(max_length=250)
+    house_number = models.CharField(max_length=4)
+    full_address = models.CharField(max_length=250)
 
-        def __str__(self):
-            return f"{self.province} {self.city}"
+    def __str__(self):
+        return f"{self.province} {self.city}"
 
 
 
