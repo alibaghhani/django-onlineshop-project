@@ -43,9 +43,29 @@ class Image(LogicalDeleteMixin):
     content_object = GenericForeignKey('content_type','object_id')
 
 class Discount(TimeStampMixin):
-    discount = models.PositiveIntegerField()
+    """
+    discount model
+
+    -----fields-----
+    discount = models.PositiveIntegerField(max_length=250, blank=True, null=True, unique=True)
     product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='product_discount')
 
 
+    """
+    discount = models.PositiveIntegerField( blank=True, null=True, unique=True)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='product_discount')
 
 
+class DiscountCode(models.Model):
+    """
+    discount coupon model
+
+    -----fields-----
+        code = models.CharField(max_length=8, blank=True, null=True, unique=True)
+
+    """
+
+    code = models.CharField(max_length=8, blank=True, null=True, unique=True)
+
+    def __str__(self):
+        return "%s" % (self.code)
