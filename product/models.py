@@ -15,11 +15,14 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
     title = models.TextField(max_length=250)
     category = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='product_category')
 
+    expired_at = None
+
     def __str__(self):
         return f"{self.category}----{self.name}"
 
 class Category(TimeStampMixin, LogicalDeleteMixin):
     name = models.CharField(max_length=250)
+    expired_at = None
 
     def __str__(self):
         return f"{self.name}"
@@ -38,4 +41,11 @@ class Image(LogicalDeleteMixin):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type','object_id')
+
+class Discount(TimeStampMixin):
+    discount = models.PositiveIntegerField()
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='product_discount')
+
+
+
 
