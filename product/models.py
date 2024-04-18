@@ -1,5 +1,4 @@
 from functools import partial
-
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
@@ -13,7 +12,7 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
     name = models.CharField(max_length=250)
     price = models.PositiveIntegerField()
     title = models.TextField(max_length=250)
-    category = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='product_category')
+    category = models.ForeignKey('Category',on_delete=models.PROTECT, related_name='product_category')
 
     expired_at = None
 
@@ -22,7 +21,7 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
 
 class Category(TimeStampMixin, LogicalDeleteMixin):
     name = models.CharField(max_length=250)
-    sub_category = models.ForeignKey('self',nullt=True,blank=True)
+    sub_category = models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True)
     expired_at = None
 
     def __str__(self):
