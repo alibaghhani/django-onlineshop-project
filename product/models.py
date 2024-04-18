@@ -52,6 +52,11 @@ class Discount(TimeStampMixin):
 
 
     """
+    DISCOUNT_CHOICES = (
+        ('percentage', '%'),
+        ('cash', '$')
+    )
+    type_of_discount = models.CharField(choices=DISCOUNT_CHOICES)
     discount = models.PositiveIntegerField( blank=True, null=True, unique=True)
     product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='product_discount')
 
