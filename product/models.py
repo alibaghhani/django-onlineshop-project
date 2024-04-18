@@ -22,6 +22,7 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
 
 class Category(TimeStampMixin, LogicalDeleteMixin):
     name = models.CharField(max_length=250)
+    sub_category = models.ForeignKey('self',nullt=True,blank=True)
     expired_at = None
 
     def __str__(self):
