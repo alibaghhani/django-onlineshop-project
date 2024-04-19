@@ -1,7 +1,7 @@
 from django.db import models
 from core.models import TimeStampMixin, LogicalDeleteMixin
 from product.models import Product, Discount
-from account.models import User
+from account.models import User, Address
 
 
 # Create your models here.
@@ -41,5 +41,10 @@ class Order(TimeStampMixin, LogicalDeleteMixin):
     #     ('cash', '$')
     # )
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_order')
-    # discount = models.CharField(choices=DISCOUNT_CHOICES, max_length=250, null=True, blank=True)
+    address = models.ForeignKey(Address,on_delete=models.PROTECT,related_name='customer-address')
+    # objects = add a manager to filter the chosen user's address
 
+    # discount = models.CharField(choices=DISCOUNT_CHOICES, max_length=250, null=True, blank=True)
+    #
+    # def get_final_price(self):
+    #     return self.order_item.all()
