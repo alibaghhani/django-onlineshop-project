@@ -9,6 +9,7 @@ class OrderItem(TimeStampMixin, LogicalDeleteMixin):
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='product_order')
     quantity = models.PositiveIntegerField()
     order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_item')
+    # final_price = models.PositiveIntegerField()
 
     @property
     def price(self):
