@@ -1,12 +1,12 @@
 from django.db import models
 from core.models import TimeStampMixin, LogicalDeleteMixin
-from product.models import Product, Discount
+from product.models import Product as ProductModel, Discount as DiscountModel
 from account.models import User, Address
 
 
 # Create your models here.
 class OrderItem(TimeStampMixin, LogicalDeleteMixin):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_order')
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='product_order')
     quantity = models.PositiveIntegerField()
     order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_item')
 
@@ -20,7 +20,7 @@ class OrderItem(TimeStampMixin, LogicalDeleteMixin):
 
     @property
     def discount(self):
-        return Discount.objects.filter(product=self.product)
+        return DiscountModel.objects.filter(product=self.product)
 
 
 
