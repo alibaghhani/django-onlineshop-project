@@ -18,3 +18,17 @@ class ProductTestCase(TestCase):
         self.assertEqual(str(self.product), expected_str)
 
 
+class CategoryTestCase(TestCase):
+    def setUp(self):
+        self.parent_category = Category.objects.create(name='Electronics')
+
+        self.child_category = Category.objects.create(name='Laptops', sub_category=self.parent_category)
+
+    def test_category_str_method(self):
+
+        expected_parent_str = self.parent_category.name
+        self.assertEqual(str(self.parent_category), expected_parent_str)
+
+        expected_child_str = f"{self.child_category.sub_category}----{self.child_category.name}"
+        self.assertEqual(str(self.child_category), expected_child_str)
+
