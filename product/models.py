@@ -13,6 +13,7 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
     price = models.PositiveIntegerField()
     title = models.TextField(max_length=250)
     category = models.ForeignKey('Category',on_delete=models.PROTECT, related_name='product_category')
+    # left = models.PositiveIntegerField()
 
     expired_at = None
 
