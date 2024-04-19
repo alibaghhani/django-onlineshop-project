@@ -42,6 +42,8 @@ class Order(TimeStampMixin, LogicalDeleteMixin):
     # )
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_order')
     address = models.ForeignKey(Address,on_delete=models.PROTECT,related_name='customer_address')
+    is_paid = models.BooleanField(default=False)
+    is_canceled = models.BooleanField(default=False)
     # objects = add a manager to filter the chosen user's address
 
     # discount = models.CharField(choices=DISCOUNT_CHOICES, max_length=250, null=True, blank=True)
