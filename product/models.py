@@ -3,10 +3,10 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from account.models import User
 from core.models import TimeStampMixin, LogicalDeleteMixin
 from core.utils import maker
-
-
+from config import  settings
 # Create your models here.
 class Product(TimeStampMixin, LogicalDeleteMixin):
     name = models.CharField(max_length=250)
@@ -72,6 +72,8 @@ class DiscountCode(models.Model):
     """
 
     code = models.CharField(max_length=8, blank=True, null=True, unique=True)
+    order = models.OneToOneField(settings.ORDER_MODEL,on_delete=models.CASCADE,null=True,blank=True,related_name='order_discount_code')
+    user = models.OneToOneField(User,on_delete=models.CASCADE,null=True,blank=True,related_name='user_discount_code')
 
     def __str__(self):
         return "%s" % (self.code)
