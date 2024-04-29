@@ -1,8 +1,7 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
+from core.models import TimeStampMixin,LogicalDeleteMixin
 from django.core.validators import RegexValidator
 from django.db import models
-from core.models import TimeStampMixin,LogicalDeleteMixin
 from .manager import UserManager
 
 # Create your models here.
@@ -21,10 +20,19 @@ class User(AbstractUser):
         regex = r"^[a-zA-Z0-9._%+-]+@gmail\.com$",
         message = 'لطفا یک ایمیل درست وارد کنید'
     )
+    username_validator = RegexValidator(
+        regex=r'^(?=.*[A-Z]).{8,}$',
+        message='Username must be at least 8 characters long and contain at least one uppercase letter.',
+    )
+    # password_validator = RegexValidator(
+    #
+    # )
+
+
     # phone_number_validator = RegexValidator(
     #     regex = r"^09[0|1|2|3][0-9]{8}$"
     # )
-
+    username = models.CharField(max_length=250,validators=[username_validator],unique=True,null=True,blank=True)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     email = models.EmailField(max_length=250,validators=[email_validator],unique=True)
@@ -41,6 +49,17 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def save(self, *args, **kwargs):
+        if self.is_superuser == False:
+            self.set_password(self.password)
+        super().save(*args, **kwargs)
+
+
+    # def save(self, *args, **kwargs):
+    #     if not self.is_superuser:
+    #         self.set_password(self.password)
+    #     super().save(*args, **kwargs)
 
 class Address(models.Model):
     """
