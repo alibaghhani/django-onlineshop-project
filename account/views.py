@@ -104,6 +104,35 @@ class SignupView(View):
         except IntegrityError:
             messages.error(request, 'An error occurred')
 
+class ChangePassword(UpdateView):
+    model = User
+    fields = ['password']
+    success_url = reverse_lazy('products')
+
+
+class SignInWithEmail(View):
+    def get(self, request):
+        return render(request, 'login_with_email.html')
+
+    def post(self, request):
+        email = request.POST.get('email', False)
+
+        try:
+            print('nenvekjrnfilwjkervnekjrnfveikjrnvekjdrnfd ')
+            user = User.objects.get(email=email)
+            otp_code = ''.join([str(randint(0, 9)) for _ in range(6)])
+            print(otp_code)
+            r.set(name=f"{user.id}", value=f"{otp_code}")
+            subject = 'Verification code'
+            message = f'Your verification code is: {otp_code}'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [email, ]
+            send_mail(subject, message, email_from, recipient_list)
+            return redirect(reverse('verify_email', kwargs={'email': email}))
+        except ObjectDoesNotExist:
+            messages.error(request, "This email does not exist. You need to create an account first!")
+            return render(request, 'login_with_email.html')
+
 
 class SignInWithEmail(View):
     def get(self, request):
@@ -182,6 +211,10 @@ class UserProfileView(DetailView):
         address = Address.objects.filter(costumer=user)
         context['addresses'] = address
         return context
+
+
+
+
 
 class ChaneProfileView(UpdateView):
         model = User
