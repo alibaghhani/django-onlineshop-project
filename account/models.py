@@ -37,7 +37,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['admin_name']
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.email}"
 
     def save(self, *args, **kwargs):
         if self.is_superuser == False:
