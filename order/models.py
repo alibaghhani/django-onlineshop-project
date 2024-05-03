@@ -4,7 +4,6 @@ from product.models import Product as ProductModel, Discount as DiscountModel
 from account.models import User, Address
 
 
-# Create your models here.
 class OrderItem(TimeStampMixin, LogicalDeleteMixin):
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='product_order')
     quantity = models.PositiveIntegerField()
