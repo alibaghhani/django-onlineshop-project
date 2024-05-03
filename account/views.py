@@ -210,6 +210,16 @@ class LoginChoice(TemplateView):
     template_name = 'login_choice.html'
 
 
+class AddAddressView(CreateView):
+    model = Address
+    template_name = 'add_address.html'
+    fields = ['province', 'city', 'street', 'alley', 'house_number', "full_address"]
+    success_url = reverse_lazy('products')
+
+    def form_valid(self, form):
+        form.instance.costumer = self.request.user
+        return super().form_valid(form)
+
 
 class ResetPasswordView(views.PasswordResetView):
     template_name = 'reset_password/reset_password.html'
