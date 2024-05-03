@@ -58,7 +58,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'Develop'],
+        'DIRS': [BASE_DIR/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -101,8 +101,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-STATIC_URL = 'assets/'
-STATICFILES_DIRS = [BASE_DIR / "assets"]
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+MEDIA_URL = '/images/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -119,7 +124,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -128,3 +132,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = ('account.User')
 AUTHENTICATION_BACKENDS = ['account.backends.EmailOrUsernameAuthenticationBackend']
 ORDER_MODEL = 'order.Order'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'django.social.media.project@gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = 'rwxnrgcrxcuxfnxi'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'akala verification code'
+
