@@ -179,6 +179,19 @@ class LogoutUser(View):
         return redirect('products')
 
 
+class UserProfileView(DetailView):
+    model = User
+    template_name = 'profile.html'
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        address = Address.objects.filter(costumer=user).last()
+        user_information = UserProfile.objects.filter(user_id=user.id).first()
+        context['addresses'] = address
+        context['user_information'] = user_information
+        return context
 
 
 
