@@ -12,13 +12,13 @@ from django.contrib.auth.views import LoginView
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse_lazy, reverse
 from redis import Redis
-from django.views.generic import CreateView, ListView, View
+from django.views.generic import CreateView, ListView, View, DetailView, UpdateView
 from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
 from sqlite3 import IntegrityError
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
-from account.models import User
+from account.models import User, Address
 
 r = Redis(host='localhost', port=6379, decode_responses=True)
 from config import settings
@@ -105,7 +105,6 @@ class SignupView(View):
             messages.error(request, 'An error occurred')
 
 
-
 class SignInWithEmail(View):
     def get(self, request):
         return render(request, 'login_with_email.html')
@@ -130,6 +129,24 @@ class SignInWithEmail(View):
             return render(request, 'login_with_email.html')
 
 
+class SignInWithUsernameAndPassword(View):
+    def get(self, request):
+        return render(request, 'login_with_username_and_password.html')
+
+    def post(self, request):
+        try:
+            username = request.POST['username']
+            user = User.objects.get(username=username)
+            print(request)
+            login(request, user)
+            user.is_verified = True
+            messages.success(request, 'logged in successfully', 'success')
+            return redirect('products')
+        except User.DoesNotExist:
+            messages.error(request, "Invalid username or password. Please try again.")
+            return render(request, 'login_with_username_and_password.html')
+
+
 def verify_email(request, email):
     if request.method == 'POST':
         user_otp = request.POST.get('otp_code')
@@ -146,3 +163,33 @@ def verify_email(request, email):
             return render(request, 'verify_email.html', {'error_message': 'invalid otp code.'})
     else:
         return render(request, 'verify_email.html')
+
+
+class LogoutUser(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+            messages.info(request, "You have been logged out successfully.")
+        return redirect('products')
+
+class UserProfileView(DetailView):
+    model = User
+    template_name = 'profile.html'
+    context_object_name = 'user'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        address = Address.objects.filter(costumer=user)
+        context['addresses'] = address
+        return context
+
+class ChaneProfileView(UpdateView):
+        model = User
+        fields = ['username','first_name','last_name']
+        template_name = 'change_profile.html'
+
+        def get_success_url(self):
+            return reverse_lazy('profile', kwargs={'pk': self.object.pk})
+
+
+
