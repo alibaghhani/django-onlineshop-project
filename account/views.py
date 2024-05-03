@@ -231,6 +231,18 @@ class DeleteAddressView(LoginRequiredMixin, DeleteView):
         return self.request.user.costumer_address.all()
 
 
+class ChaneProfileView(UpdateView):
+    model = UserProfile
+    fields = ['first_name', 'last_name', 'gender']
+    template_name = 'change_profile.html'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(UserProfile, user=self.request.user)
+
+    def get_success_url(self):
+        return reverse_lazy('profile', kwargs={'pk': self.object.user.pk})
+
+
 
 class ResetPasswordView(views.PasswordResetView):
     template_name = 'reset_password/reset_password.html'
