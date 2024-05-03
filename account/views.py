@@ -193,6 +193,22 @@ class UserProfileView(DetailView):
         context['user_information'] = user_information
         return context
 
+class AllUsersAddresses(ListView):
+    model = Address
+    template_name = 'users_addresses.html'
+    context_object_name = 'addresses'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user.id
+        addresses = Address.objects.filter(costumer=user)
+        context['addresss'] = addresses
+        return context
+
+
+class LoginChoice(TemplateView):
+    template_name = 'login_choice.html'
+
 
 
 class ResetPasswordView(views.PasswordResetView):
