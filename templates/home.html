@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static "css/navbar.css" %}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        :root {
+            --size: 400px;
+            --blue: #aad5ff;
+            --lb: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            display: grid;
+            justify-items: center;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            background-color: var(--blue);
+            color: cornsilk;
+            font-family: "Roboto Condensed", sans-serif;
+        }
+
+        .container {
+            width: var(--size);
+            height: var(--size);
+            display: grid;
+            grid-template-columns: repeat(2, 50%);
+            grid-template-rows: repeat(2, 50%);
+            justify-items: center;
+            align-items: center;
+            filter: drop-shadow(0px 0px 7px rgba(1, 1, 1, .7));
+        }
+
+        .productImage {
+            grid-column: 1/span 2;
+            grid-row: 1 /span 2;
+            width: var(--size);
+            height: var(--size);
+            background-size: cover;
+            clip-path: polygon(
+                    20% 20%,
+                    50% 20%,
+                    50% 20%,
+                    80% 20%,
+                    80% 50%,
+                    80% 50%,
+                    80% 80%,
+                    50% 80%,
+                    50% 80%,
+                    20% 80%,
+                    20% 50%,
+                    20% 50%
+            );
+            transition: all 0.7s cubic-bezier(0.895, 0.03, 0.685, 0.22);
+        }
+
+        .shoeImg {
+            background-color: #148bff;
+        }
+
+        .shirtImg {
+            background-image: url(https://source.unsplash.com/49wtmkUVmFQ/1000x1000);
+            background-color: #aace29;
+        }
+
+        h4,
+        ul,
+        span {
+            padding: 0;
+            margin: 0;
+        }
+
+        .size,
+        .color {
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: center;
+            z-index: 1;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.895, 0.03, 0.685, 0.22);
+        }
+
+        .size ul li,
+        .color ul li {
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            margin: 5px;
+            padding: 5px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .color {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .color ul li span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .yellow {
+            background-color: greenyellow;
+        }
+
+        .blue {
+            background-color: #0070ee;
+        }
+
+        .price {
+            grid-column: 2;
+            grid-row: 1;
+            justify-self: center;
+            z-index: 1;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.895, 0.03, 0.685, 0.22);
+        }
+
+        .price h4 {
+            margin-bottom: 8px;
+        }
+
+        .price span {
+            width: 20px;
+            height: 20px;
+            padding: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .productName {
+            grid-column: 1;
+            grid-row: 2;
+            align-self: center;
+            justify-self: center;
+            z-index: 1;
+            transition: all 0.7s cubic-bezier(0.895, 0.03, 0.685, 0.22);
+        }
+
+        .productImage:hover {
+            clip-path: polygon(
+                    20% 0%,
+                    50% 0%,
+                    50% 20%,
+                    100% 20%,
+                    100% 50%,
+                    80% 50%,
+                    80% 100%,
+                    50% 100%,
+                    50% 80%,
+                    0% 80%,
+                    0% 50%,
+                    20% 50%
+            );
+            transform: rotate(-15deg);
+            transition: all 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+
+        .productImage:hover ~ * {
+            opacity: 1;
+            transform: rotate(-15deg);
+            transition: all 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+
+        .credits {
+            color: white;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+            justify-self: center;
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<div class="relative flex h-16 items-center justify-between">
+    <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+        <!-- Mobile menu button-->
+        <button type="button"
+                class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                aria-controls="mobile-menu" aria-expanded="false">
+            <span class="absolute -inset-0.5"></span>
+            <span class="sr-only">Open main menu</span>
+            <!--
+              Icon when menu is closed.
+
+              Menu open: "hidden", Menu closed: "block"
+            -->
+            <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                 aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+            </svg>
+            <!--
+              Icon when menu is open.
+
+              Menu open: "block", Menu closed: "hidden"
+            -->
+            <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                 aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+        <div class="hidden sm:ml-6 sm:block">
+            <div class="flex space-x-4">
+                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                <a href="#" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                   aria-current="page">Dashboard</a>
+                <a href="{% url 'category_tree' %}"
+                   class="text-black hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
+                <a href="#"
+                   class="text-black hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">search</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' request.user.pk %}"
+                       class="text-black hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">profile</a>
+                {% else %}
+                    <a href="{% url 'login_choice' %}"
+                       class="text-black hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+    </div>
+</div>
+<body>
+{% for product, images in product_images.items %}
+    <div class="container shoe">
+        <div src="{{ image.image.url }}" alt="Product Image" class="productImage shoeImg"></div>
+        <div class="size shoeSize">
+            <a href="{% url 'product_detail' product.id %}">
+                <h4>DETAIL</h4>
+            </a>
+
+        </div>
+        <div class="price shoePrice">
+            <h4>PRICE</h4>
+            {% if product.product_discount.all %}
+                <span style="text-decoration: line-through;">{{ product.price }}</span>
+                <span>{{ product.discounted_price }}</span>
+            {% else %}
+                <span>{{ product.price }}</span>
+            {% endif %}
+        </div>
+        <div class="color shoeColor">
+            <h4>COLORS</h4>
+            <ul>
+                <li><span class="blue"></span></li>
+                <li><span class="yellow"></span></li>
+                <li><span class="red"></span></li>
+            </ul>
+        </div>
+        <div class="productName shoeName">
+            {{ product.name }}
+        </div>
+    </div>
+{% endfor %}
+</body>
+</html>

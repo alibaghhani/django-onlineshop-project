@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Category Tree</title>
+    <style>
+        .subcategory {
+            display: none;
+        }
+
+        .category > input[type="checkbox"] {
+            display: none;
+        }
+
+        .category > input[type="checkbox"]:checked ~ .subcategory {
+            display: block;
+        }
+
+        .category label {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<form>
+    {% for category, subcategories in category_dict.items %}
+        <div class="category">
+            <label for="category_{{ category.id }}">{{ category.name }}</label>
+            <input type="checkbox" id="category_{{ category.id }}">
+            <ul class="subcategory">
+                {% for subcategory in subcategories %}
+                    <li>{{ subcategory.na }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+</form>
+</body>
+</html>

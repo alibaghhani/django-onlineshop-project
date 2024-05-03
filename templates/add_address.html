@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title>add address</title>
+</head>
+<body>
+<div class="bg-green-400 p-6">
+    <form class="w-full max-w-lg m-auto" method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="province" class="block text-sm font-medium text-gray-700">Province:</label>
+            {{ form.province }}
+        </div>
+        <div class="mb-4">
+            <label for="city" class="block text-sm font-medium text-gray-700">City:</label>
+            {{ form.city }}
+        </div>
+        <div class="mb-4">
+            <label for="street" class="block text-sm font-medium text-gray-700">Street:</label>
+            {{ form.street }}
+        </div>
+        <div class="mb-4">
+            <label for="alley" class="block text-sm font-medium text-gray-700">Alley:</label>
+            {{ form.alley }}
+        </div>
+        <div class="mb-4">
+            <label for="house_number" class="block text-sm font-medium text-gray-700">House Number:</label>
+            {{ form.house_number }}
+        </div>
+        <div class="mb-4">
+            <label for="full_address" class="block text-sm font-medium text-gray-700">Full Address:</label>
+            {{ form.full_address }}
+        </div>
+        <button type="submit" class="bg-white text-green-600 py-2 px-4 rounded shadow">Submit</button>
+    </form>
+</div>
+</body>
+</html>

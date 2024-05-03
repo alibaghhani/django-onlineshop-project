@@ -14,17 +14,17 @@
             <img src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png"
                  alt="illustration" class="illustration"/>
             <h1 class="opacity">LOGIN</h1>
-            <form method="post" action="{% url 'register' %}">
+            {% if error_message %}
+                <p class="error-message">{{ error_message }}</p>
+            {% endif %}
+            <form method="post">
                 {% csrf_token %}
-                <input type="text" name="username" id="id_username" placeholder="username"/>
-                <input type="text" name="password" id="id_password" placeholder="password"/>
-                <input type="email" name="email" id="id_email" placeholder="email"/>
-
-                <input type="submit" class="opacity" value="Submit">
+                <input type="text" name="otp_code" id="otp_code" placeholder="Enter OTP" required>
+                <button type="submit" class="opacity">VERIFY</button>
             </form>
             <div class="register-forget opacity">
-                <a href="">REGISTER</a>
-                <a href="">FORGOT PASSWORD</a>
+                <a href="{% url 'register' %}">REGISTER</a>
+                <a href="#">FORGOT PASSWORD</a>
             </div>
         </div>
         <div class="circle circle-two"></div>
@@ -32,5 +32,6 @@
     <div class="theme-btn-container"></div>
 </section>
 <script src="{% static 'js/signupjs.js' %}"></script>
+
 </body>
 </html>

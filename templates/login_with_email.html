@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>signup</title>
+    <title>Login</title>
     <link rel="stylesheet" href="{% static 'css/signupcss.css' %}">
 </head>
 <body>
@@ -14,23 +14,26 @@
             <img src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png"
                  alt="illustration" class="illustration"/>
             <h1 class="opacity">LOGIN</h1>
-            <form method="post" action="{% url 'register' %}">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post" action="{% url 'email_login' %}">
                 {% csrf_token %}
-                <input type="text" name="username" id="id_username" placeholder="username"/>
-                <input type="text" name="password" id="id_password" placeholder="password"/>
-                <input type="email" name="email" id="id_email" placeholder="email"/>
-
+                <input type="email" name="email" id="email" placeholder="Email"/>
                 <input type="submit" class="opacity" value="Submit">
             </form>
             <div class="register-forget opacity">
-                <a href="">REGISTER</a>
-                <a href="">FORGOT PASSWORD</a>
+                <a href="{% url 'register' %}">REGISTER</a>
+                <a href="{% url 'reset_password' %}">FORGOT PASSWORD</a>
             </div>
         </div>
         <div class="circle circle-two"></div>
     </div>
     <div class="theme-btn-container"></div>
 </section>
-<script src="{% static 'js/signupjs.js' %}"></script>
 </body>
 </html>
