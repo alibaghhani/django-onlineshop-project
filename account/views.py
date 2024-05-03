@@ -132,28 +132,6 @@ class VerifyEmailForChangePassword(View):
         except ObjectDoesNotExist:
             messages.error(request, "This email does not exist. You need to create an account first!")
             return render(request, 'login_with_email.html')
-class SignInWithEmail(View):
-    def get(self, request):
-        return render(request, 'login_with_email.html')
-
-    def post(self, request):
-        email = request.POST.get('email', False)
-
-        try:
-            print('nenvekjrnfilwjkervnekjrnfveikjrnvekjdrnfd ')
-            user = User.objects.get(email=email)
-            otp_code = ''.join([str(randint(0, 9)) for _ in range(6)])
-            print(otp_code)
-            r.set(name=f"{user.id}", value=f"{otp_code}")
-            subject = 'Verification code'
-            message = f'Your verification code is: {otp_code}'
-            email_from = settings.EMAIL_HOST_USER
-            recipient_list = [email, ]
-            send_mail(subject, message, email_from, recipient_list)
-            return redirect(reverse('verify_email', kwargs={'email': email}))
-        except ObjectDoesNotExist:
-            messages.error(request, "This email does not exist. You need to create an account first!")
-            return render(request, 'login_with_email.html')
 
 
 class SignInWithEmail(View):
@@ -199,6 +177,23 @@ class SignInWithUsernameAndPassword(View):
 
 
 def verify_email(request, email):
+    if request.method == 'POST':
+        user_otp = request.POST.get('otp_code')
+        user = User.objects.get(email=email)
+        otp = r.get(f'{user.id}')
+        if otp == user_otp:
+            user.is_active = True
+            user.save()
+            password = r.get(user.username)
+            print(user.username, password)
+            login(request, user)
+            return redirect('register')
+        else:
+            return render(request, 'verify_email.html', {'error_message': 'invalid otp code.'})
+    else:
+        return render(request, 'verify_email.html')
+
+def verify_email_for_changing_password(request, email):
     if request.method == 'POST':
         user_otp = request.POST.get('otp_code')
         user = User.objects.get(email=email)
