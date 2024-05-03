@@ -221,6 +221,17 @@ class AddAddressView(CreateView):
         return super().form_valid(form)
 
 
+
+class DeleteAddressView(LoginRequiredMixin, DeleteView):
+    model = Address
+    success_url = reverse_lazy('delete_addresses_success')
+    login_url = reverse_lazy('login_choice')
+
+    def get_queryset(self):
+        return self.request.user.costumer_address.all()
+
+
+
 class ResetPasswordView(views.PasswordResetView):
     template_name = 'reset_password/reset_password.html'
     success_url = reverse_lazy('password_reset_done')
