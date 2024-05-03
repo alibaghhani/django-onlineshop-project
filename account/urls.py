@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (SignupView, verify_email, SignInWithEmail, SignInWithUsernameAndPassword,
                     LogoutUser, UserProfileView, ChaneProfileView, ResetPasswordView, ResetPasswordDoneView
-, UserPasswordResetConfirmView, UserPasswordResetCompleteView,AllUsersAddresses,AddAddressView)
+, UserPasswordResetConfirmView, UserPasswordResetCompleteView, AllUsersAddresses, AddAddressView, LoginChoice,
+                    DeleteAddressView)
 
 urlpatterns = [
     path('register/', SignupView.as_view(), name='register'),
@@ -15,6 +16,9 @@ urlpatterns = [
     path('reset/done/', ResetPasswordDoneView.as_view(), name='password_reset_done'),
     path('confirm/<uidb64>/<token>/', UserPasswordResetConfirmView.as_view(), name="password_reset_confirm"),
     path('confirm/complete', UserPasswordResetCompleteView.as_view(), name='password_reset_complete'),
-    path('user_address/', AllUsersAddresses.as_view(),name='all_addresses'),
-    path('add_new_address/',AddAddressView.as_view(),name="add_address")
+    path('user_address/', AllUsersAddresses.as_view(), name='all_addresses'),
+    path('add_new_address/', AddAddressView.as_view(), name="add_address"),
+    path('choice_login_way/', LoginChoice.as_view(), name="login_choice"),
+    path('delete-address/<int:pk>/', DeleteAddressView.as_view(), name='delete_address'),
+
 ]
