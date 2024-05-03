@@ -1,7 +1,7 @@
 from django.shortcuts import render
+from django.views import View
 from django.views.generic import ListView, DetailView
-from .models import Product,Image
-
+from .models import Product, Image, Category
 
 
 class ProductsListView(ListView):
@@ -18,8 +18,24 @@ class ProductsListView(ListView):
         context['product_images'] = product_images
         return context
 
+
 class ProductDetailView(DetailView):
     model = Product
     context_object_name = 'product'
     template_name = 'product_detail.html'
 
+
+
+class CategoryTreeView(View):
+    def get(self, request):
+        categories = Category.objects.filter(sub_category__isnull=True)
+
+        category_and_subcategory = {}
+        for category in categories:
+            if category.sub_category:
+                subcategories = category.sub_category.all()
+            else:
+                subcategories = None
+            category_and_subcategory[category] = subcategories
+
+        return render(request, 'category_tree.html', {'category_dict': category_and_subcategory})
