@@ -13,30 +13,21 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
     price = models.PositiveIntegerField()
     title = models.TextField(max_length=250)
     category = models.ForeignKey('Category',on_delete=models.PROTECT, related_name='product_category')
-    # left = models.PositiveIntegerField()
+
 
     expired_at = None
 
-    # @property
-    # def discounted_price(self):
-    #     if self.product_discount:
-    #         discount_available = Discount.objects.filter(product=self.name)
-    #         if discount_available.exists():
-    #             if discount_available.filter(type_of_discount='%'):
-    #                 discount.get
-    #                 final_price = self.price *
+
 
     @property
     def discounted_price(self):
         discounts = self.product_discount.all()
-        discounted_price = self.price
         for discount in discounts:
             if discount.type_of_discount == 'percentage':
-                discounted_price -= (self.price * discount.discount) / 100
-            elif discount.type_of_discount == 'cash':
-                discounted_price -= discount.discount
-        return discounted_price
-
+                discounted_price = self.price * discount.discount / 100
+            else:
+                discounted_price = self.price - discount.discount
+            return discounted_price
 
 
     def __str__(self):
@@ -44,8 +35,14 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
 
 class Category(TimeStampMixin, LogicalDeleteMixin):
     name = models.CharField(max_length=250)
-    sub_category = models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True)
+    parent = models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True,related_name="child")
     expired_at = None
+
+
+    def get_all_parents(self):
+        return Category.objects.filter(parent_id=None)
+
+
 
     def __str__(self):
         return f"{self.name}"
@@ -53,7 +50,6 @@ class Category(TimeStampMixin, LogicalDeleteMixin):
 
 class Image(LogicalDeleteMixin):
     image = models.ImageField(
-        upload_to='images',
         validators=[
             FileExtensionValidator(
                 allowed_extensions=["jpeg", "png", "jpg", "gif", "mp4", "avi", "flv"]
