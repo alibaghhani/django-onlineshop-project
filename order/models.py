@@ -7,15 +7,15 @@ from account.models import User, Address
 class OrderItem(TimeStampMixin, LogicalDeleteMixin):
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='product_order')
     quantity = models.PositiveIntegerField()
-    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_item')
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_items',null=True,blank=True)
     # final_price = models.PositiveIntegerField()
 
     @property
     def price(self):
         return self.product.price
 
-    @property
-    def total_price(self):
+
+    def get_total_price(self):
         return self.price * self.quantity
 
     @property
@@ -50,3 +50,6 @@ class Order(TimeStampMixin, LogicalDeleteMixin):
     #
     # def get_final_price(self):
     #     return self.order_item.all()
+
+    def get_total_price(self):
+        return sum(order_item.get_total_price() for order_item in self.order_items.all())
