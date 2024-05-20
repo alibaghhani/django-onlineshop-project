@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
 from django.urls import reverse_lazy, reverse
 from redis import Redis
 from django.views.generic import View, DetailView, UpdateView, ListView, CreateView, TemplateView, DeleteView
@@ -60,10 +61,6 @@ r = Redis(host='localhost', port=6379, decode_responses=True)
 class SignupView(View):
     template_name = 'signup.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('products')
-
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
@@ -72,14 +69,20 @@ class SignupView(View):
         password = request.POST.get('password')
         email = request.POST.get('email')
 
+
         if not all([username, password, email]):
-            return messages.error(request, "please fill al blanks")
+            messages.error(request, "please fill al blanks")
+            return self.get(self.request)
+
 
         if User.objects.filter(email=email).exists():
-            return messages.error(request, 'this email already exist')
+            messages.error(request, 'this email already exist')
+            return self.get(self.request)
+
 
         if User.objects.filter(username=username).exists():
-            return messages.error(request, 'this username already exist')
+            messages.error(request, 'this username already exist')
+            return self.get(self.request)
 
         try:
             r.set(name=username, value=password)
@@ -91,27 +94,31 @@ class SignupView(View):
             otp_code = ''.join([str(randint(0, 9)) for _ in range(6)])
             r.set(name=str(user.id), value=otp_code)
             print(otp_code)
-
             subject = 'Verification code'
             message = f'Your verification code is: {otp_code}'
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [email]
             send_mail(subject, message, email_from, recipient_list)
+            self.request.session['user_information'] = {
+                "username": user.username,
+                "email": user.email
+            }
+            self.request.session.modified = True
             return redirect(reverse('verify_email', kwargs={'email': email}))
         except IntegrityError:
             messages.error(request, 'An error occurred')
 
 
 class SignInWithEmail(View):
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('products')
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated:
+    #         return redirect('products')
 
     def get(self, request):
         return render(request, 'login_with_email.html')
 
     def post(self, request):
-        email = request.POST.get('email', False)
+        email = request.POST.get('email')
 
         try:
             print('nenvekjrnfilwjkervnekjrnfveikjrnvekjdrnfd ')
@@ -125,6 +132,9 @@ class SignInWithEmail(View):
             recipient_list = [email, ]
             send_mail(subject, message, email_from, recipient_list)
             return redirect(reverse('verify_email', kwargs={'email': email}))
+        except User.MultipleObjectsReturned:
+            messages.error(request, "Multiple users found with the same email. Please contact support.")
+            return render(request, 'login_with_email.html')
         except ObjectDoesNotExist:
             messages.error(request, "This email does not exist. You need to create an account first!")
             return render(request, 'login_with_email.html')
@@ -132,9 +142,9 @@ class SignInWithEmail(View):
 
 class SignInWithUsernameAndPassword(View):
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('products')
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated:
+    #         return redirect('products')
 
     def get(self, request):
         return render(request, 'login_with_username_and_password.html')
@@ -164,6 +174,10 @@ def verify_email(request, email):
             password = r.get(user.username)
             print(user.username, password)
             login(request, user)
+            # request.session['user_information'] = {
+            #     "username" : user.username,
+            #     "email" : user.email
+            # }
             return redirect('products')
         else:
             return render(request, 'verify_email.html', {'error_message': 'invalid otp code.'})
@@ -261,3 +275,14 @@ class UserPasswordResetConfirmView(views.PasswordResetConfirmView):
 
 class UserPasswordResetCompleteView(views.PasswordResetCompleteView):
     template_name = 'reset_password/password_reset_complete.html'
+
+class AdminPannel(TemplateView):
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser == False:
+            return HttpResponse('nigga fuck that child')
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def get(self, request, **kwargs):
+        return HttpResponse('my admin nigga')
