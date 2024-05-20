@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     'account',
     'core',
     'product',
-    'order'
+    'order',
+    'rest_framework'
 ]
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -138,4 +140,5 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = 'rwxnrgcrxcuxfnxi'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'akala verification code'
+ORDER_SESSION_ID = 'order'
 
