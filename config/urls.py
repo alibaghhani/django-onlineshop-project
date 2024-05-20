@@ -23,5 +23,6 @@ from config import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/',include('account.urls')),
-    path('',include('product.urls'))
+    path('',include('product.urls')),
+    path('order/',include('order.urls'))
 ]
