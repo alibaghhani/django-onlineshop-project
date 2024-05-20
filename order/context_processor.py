@@ -1,4 +1,4 @@
 from .order import Order
 
-def cart(request):
+def order(request):
     return {'order': Order(request)}
