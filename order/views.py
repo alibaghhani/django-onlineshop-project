@@ -39,3 +39,10 @@ class AddItemToOrderView(View):
         if form.is_valid():
             order.add(product, form.cleaned_data['quantity'])
         return redirect('order')
+
+class RemoveItemFromOrderView(View):
+    def get(self,request,product_id):
+        order = Order(request)
+        product = get_object_or_404(Product,id=product_id)
+        order.remove(product)
+        return redirect('order')
