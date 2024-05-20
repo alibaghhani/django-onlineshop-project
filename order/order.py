@@ -38,6 +38,9 @@ class Order:
         self.order[product_id]['quantity'] += quantity
         self.save_session()
 
+    def __len__(self):
+        return sum(value['quantity'] for value in self.order.values())
+
     def remove(self,product):
         product_id = str(product.id)
         if product_id in self.order:
