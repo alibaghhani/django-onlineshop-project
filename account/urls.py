@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import (SignupView, verify_email, SignInWithEmail, SignInWithUsernameAndPassword,
-                    LogoutUser, UserProfileView, ChaneProfileView, ResetPasswordView, ResetPasswordDoneView
-, UserPasswordResetConfirmView, UserPasswordResetCompleteView, AllUsersAddresses, AddAddressView, LoginChoice,
-                    DeleteAddressView)
+                    LogoutUser, UserProfileView, ChaneProfileView, ResetPasswordView,
+                    ResetPasswordDoneView, UserPasswordResetConfirmView, UserPasswordResetCompleteView
+                    , AllUsersAddresses, AddAddressView, LoginChoice,DeleteAddressView,AdminPannel)
 
 urlpatterns = [
     path('register/', SignupView.as_view(), name='register'),
@@ -20,5 +20,6 @@ urlpatterns = [
     path('add_new_address/', AddAddressView.as_view(), name="add_address"),
     path('choice_login_way/', LoginChoice.as_view(), name="login_choice"),
     path('delete-address/<int:pk>/', DeleteAddressView.as_view(), name='delete_address'),
+    path('AdminPannel/', AdminPannel.as_view(), name='Admin')
 
 ]
