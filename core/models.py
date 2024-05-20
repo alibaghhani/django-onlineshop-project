@@ -1,5 +1,8 @@
 from django.db import models
 
+from core.managers import LogicalManager
+
+
 # Create your models here.
 class TimeStampMixin(models.Model):
     """
@@ -29,7 +32,7 @@ class LogicalDeleteMixin(models.Model):
     """
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
-
+    objects = LogicalManager()
     def delete(self, using=None, keep_parents=False):
         self.is_deleted = True
         self.save(update_fields=["is_deleted"])
