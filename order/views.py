@@ -30,3 +30,12 @@ class OrderView(View):
     def get(self,request):
         order = Order(request)
         return render(request,'order.html',{'order':order})
+
+class AddItemToOrderView(View):
+    def post(self,request,product_id):
+        order = Order(request)
+        product = get_object_or_404(Product,id=product_id)
+        form = CartItemQuantityForm(request.POST)
+        if form.is_valid():
+            order.add(product, form.cleaned_data['quantity'])
+        return redirect('order')
