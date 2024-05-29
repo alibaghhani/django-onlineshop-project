@@ -4,37 +4,6 @@ from product.models import Product as ProductModel, Discount as DiscountModel
 from account.models import User, Address
 
 
-class OrderItem(TimeStampMixin, LogicalDeleteMixin):
-    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='product_order')
-    quantity = models.PositiveIntegerField()
-    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_items',null=True,blank=True)
-    # final_price = models.PositiveIntegerField()
-
-    @property
-    def price(self):
-        return self.product.price
-
-
-    def get_total_price(self):
-        return self.price * self.quantity
-
-    @property
-    def discount(self):
-        return DiscountModel.objects.filter(product=self.product)
-
-
-
-    def discounted_price(self):
-        # return *[self.total_price()-(self.quantity*Discount.objects.filter(product=self.product)) if Discount.objects.filter(product=self.product)]
-        if self.discount:
-            return self.total_price - (self.quantity * self.discount)
-        else:
-            return None
-
-    # def __str__(self):
-    #     return f"{self.order}"
-
-
 class Order(TimeStampMixin, LogicalDeleteMixin):
     # DISCOUNT_CHOICES = (
     #     ('percentage', '%'),
@@ -53,3 +22,34 @@ class Order(TimeStampMixin, LogicalDeleteMixin):
 
     def get_total_price(self):
         return sum(order_item.get_total_price() for order_item in self.order_items.all())
+
+
+
+class OrderItem(TimeStampMixin, LogicalDeleteMixin):
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='product_order')
+    quantity = models.PositiveIntegerField()
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_items')
+    price = models.PositiveIntegerField()
+
+
+
+
+    def get_total_price(self):
+        return self.price * self.quantity
+
+    @property
+    def discount(self):
+        return DiscountModel.objects.filter(product=self.product)
+
+
+
+    def discounted_price(self):
+        # return *[self.total_price()-(self.quantity*Discount.objects.filter(product=self.product)) if Discount.objects.filter(product=self.product)]
+        if self.discount:
+            return self.get_total_price() - (self.quantity * self.discount)
+        else:
+            return None
+
+    # def __str__(self):
+    #     return f"{self.order}"
+
