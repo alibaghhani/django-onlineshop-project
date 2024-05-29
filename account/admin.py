@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import User, Address, UserProfile
-from product.models import Image,Category,Product,Discount,DiscountCode
-from order.models import OrderItem,Order
+from product.models import Image, Category, Product, Discount, DiscountCode
+from order.models import OrderItem, Order
+
 # Register your models here.
 admin.site.register(Address)
 admin.site.register(Image)
@@ -16,7 +17,11 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User
 
-class CustomUserAdmin(UserAdmin):
+
+class CustomUserAdmin(admin.ModelAdmin):
     model = User
+
+    filter_horizontal = ("groups", "user_permissions")
+
 
 admin.site.register(User, CustomUserAdmin)
