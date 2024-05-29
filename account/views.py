@@ -72,17 +72,17 @@ class SignupView(View):
 
         if not all([username, password, email]):
             messages.error(request, "please fill al blanks")
-            return self.get(self.request)
+            return render(request, self.template_name)
 
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'this email already exist')
-            return self.get(self.request)
+            return render(request, self.template_name)
 
 
         if User.objects.filter(username=username).exists():
             messages.error(request, 'this username already exist')
-            return self.get(self.request)
+            return render(request, self.template_name)
 
         try:
             r.set(name=username, value=password)

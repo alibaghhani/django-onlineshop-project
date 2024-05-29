@@ -26,6 +26,7 @@ class ProductDetailView(DetailView):
     model = Product
     context_object_name = 'product'
     template_name = 'product_detail.html'
+    lookup_field = 'slug'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form = CartItemQuantityForm()
@@ -70,14 +71,25 @@ class CategoryTreeView(ListView):
         return context
 
 
+# class SubcategoryAndProducts(View):
+#     def get(self,request,id):
+#         category = Category.objects.get(id=id)
+#         products = Product.objects.filter(category=category)
+#         product_images = {}
+#         for product in products:
+#             product_images[product] = Image.objects.filter(product=product)
+#         return render(self.request,'category_products.html',{'category': category,'products':products,"product_image":product_images})
+#
+#
+
 class SubcategoryAndProducts(View):
-    def get(self,request,id):
+    def get(self, request, id):
         category = Category.objects.get(id=id)
         products = Product.objects.filter(category=category)
-        return render(self.request,'category_products.html',{'category': category,'prodcut':products})
-
-
-
-
+        product_data = []
+        for product in products:
+            images = Image.objects.filter(product=product)
+            product_data.append((product, images))
+        return render(request, 'category_products.html', {'category': category, 'product_data': product_data})
 
 
