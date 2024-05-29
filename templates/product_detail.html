@@ -8,9 +8,9 @@
 </head>
 <style>
     :root {
-        --color-primary: #4c4c4c;
-        --color-secondary: #a6a6a6;
-        --color-highlight: #ff3f40;
+        --color-primary: #ffffff;
+        --color-secondary: #ffffff;
+        --color-highlight: #b41616;
     }
 
     /* ----- Global ----- */
@@ -27,7 +27,7 @@
         display: grid;
         grid-template-rows: 1fr;
         font-family: "Raleway", sans-serif;
-        background-color: #01e37f;
+        background-color: #121313;
     }
 
     h3 {
@@ -48,7 +48,7 @@
         margin: auto;
         padding: 2.5em 0;
         min-width: 600px;
-        background-color: white;
+        background-color: #293969;
         border-radius: 5px;
     }
 
@@ -71,7 +71,7 @@
     .photo-main {
         border-radius: 6px 6px 0 0;
         background-color: #9be010;
-        background: radial-gradient(#e5f89e, #96e001);
+        background: radial-gradient(#3b70e1, #000000);
     }
 
     .photo-main .controls {
@@ -132,7 +132,7 @@
 
     .price {
         margin: 1.5em 0;
-        color: var(--color-highlight);
+        color: #ffffff;
         font-size: 1.2em;
     }
 
@@ -171,6 +171,7 @@
     .description {
         clear: left;
         margin: 2em 0;
+        color: #ffffff;
     }
 
     .description h3 {
@@ -188,18 +189,6 @@
         margin-bottom: 0.5em;
     }
 
-    .buy--btn {
-        padding: 1.5em 3.1em;
-        border: none;
-        border-radius: 7px;
-        font-size: 0.8em;
-        font-weight: 700;
-        letter-spacing: 1.3px;
-        color: #fff;
-        background-color: var(--color-highlight);
-        box-shadow: 2px 2px 25px -7px var(--color-primary);
-        cursor: pointer;
-    }
 
     .buy--btn:active {
         transform: scale(0.97);
@@ -218,6 +207,19 @@
 
     footer a:hover {
         color: var(--color-highlight);
+    }
+
+    .buy--btn {
+        padding: 1.5em 3.1em;
+        border: none;
+        border-radius: 7px;
+        font-size: 0.8em;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+        color: #000000;
+        background-color: #6992d9;
+        box-shadow: 2px 2px 25px -7px #007aff;
+        cursor: pointer;
     }
 </style>
 <body>
@@ -255,18 +257,18 @@
         <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <a href="#" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                <a href="#" class="bg-blue-900 text-white rounded-md px-3 py-2 text-sm font-medium"
                    aria-current="page">Dashboard</a>
                 <a href="#"
-                   class="text-black hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">cart</a>
+                   class="bg-blue-900 text-white hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">cart</a>
                 <a href="#"
-                   class="text-black hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">search</a>
+                   class="bg-blue-900 text-white hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">search</a>
                 {% if user.is_authenticated %}
                     <a href="{% url 'profile' request.user.pk %}"
-                       class="text-black hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">profile</a>
+                       class="bg-blue-900 text-white hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">profile</a>
                 {% else %}
                     <a href="{% url 'email_login' %}"
-                       class="text-black hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">login</a>
+                       class="bg-blue-900 text-white hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">login</a>
                 {% endif %}
             </div>
         </div>
@@ -278,54 +280,56 @@
     <div class="product__photo">
         <div class="photo-container">
             <div class="photo-main">
-                <div class="controls">
-                    <i class="material-icons">share</i>
-                    <i class="material-icons">favorite_border</i>
-                </div>
-                <img src="https://res.cloudinary.com/john-mantas/image/upload/v1537291846/codepen/delicious-apples/green-apple-with-slice.png"
-                     alt="green apple slice">
-            </div>
-            <div class="photo-album">
-                <ul>
-                    <li><img
-                            src="https://res.cloudinary.com/john-mantas/image/upload/v1537302064/codepen/delicious-apples/green-apple2.png"
-                            alt="green apple"></li>
-                    <li><img
-                            src="https://res.cloudinary.com/john-mantas/image/upload/v1537303532/codepen/delicious-apples/half-apple.png"
-                            alt="half apple"></li>
-                    <li><img
-                            src="https://res.cloudinary.com/john-mantas/image/upload/v1537303160/codepen/delicious-apples/green-apple-flipped.png"
-                            alt="green apple"></li>
-                    <li><img
-                            src="https://res.cloudinary.com/john-mantas/image/upload/v1537303708/codepen/delicious-apples/apple-top.png"
-                            alt="apple top"></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+
+                {% if product.products_post.last %}
+                    <img src="{{ product.products_post.last.image.url }}" alt="green apple slice">
+
+                    </div>
+                    <div class="photo-album">
+                        <ul>
+                            <li><img
+                                    src="{{ product.products_post.last.image.url }}"></li>
+                            <li><img
+                                    src="{{ product.products_post.last.image.url }}"></li>
+                            <li><img
+                                    src="{{ product.products_post.last.image.url }}"></li>
+                            <li><img
+                                    src="{{ product.products_post.last.image.url }}"></li>
+                        </ul>
+                    </div>
+                    </div>
+                    </div>
+                {% endif %}
     <div class="product__info">
         <div class="title">
-            <h1>{{ product.name }}</h1>
-            <span>COD: {{ product.id }}</span>
+            <h1 id="productname">{{ product.name }}</h1>
+            <span id="productid">COD: {{ product.id }}</span>
         </div>
         <div class="price shoePrice">
             <h4>PRICE</h4>
             {% if product.product_discount.all %}
-                <span style="text-decoration: line-through;">{{ product.price }}</span>
+                <p style="text-decoration: line-through;">{{ product.price }}</p><br>
                 <span>{{ product.discounted_price }}</span>
             {% else %}
                 <span>{{ product.price }}</span>
+                {% if product.get_warehouse %}
+                    <p class="text-red-500">{{ product.warehouse }}</p>
+                {% endif %}
             {% endif %}
         </div>
 
         <div class="description">
-            <h3>BENEFITS</h3>
+            <h3>DETAILS</h3>
             <ul>
-                <li>{{ product.title }}</li>
+                <li>{{ product.detail }}</li>
 
             </ul>
         </div>
-        <button class="buy--btn">ADD TO CART</button>
+        <form action="{% url 'order-add-item' product.id %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="buy--btn" id="AddToCart">ADD TO CART</button>
+        </form>
     </div>
 </section>
 </body>
