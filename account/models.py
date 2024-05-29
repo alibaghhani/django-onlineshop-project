@@ -58,6 +58,7 @@ class Address(models.Model):
     house_number = models.CharField(max_length=4)
     full_address = models.TextField(max_length=250)
 
+
     def __str__(self):
         return f"{self.province} {self.city}"
 
