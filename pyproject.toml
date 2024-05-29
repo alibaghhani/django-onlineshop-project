@@ -9,6 +9,10 @@ packages = [{include = "django_shop_final_project"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 django = "^5.0.4"
+psycopg2-binary = "^2.9.9"
+redis = "^5.0.4"
+pillow = "^10.3.0"
+djangorestframework = "^3.15.1"
 
 
 [build-system]
