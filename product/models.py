@@ -3,6 +3,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.template.defaultfilters import slugify
+
 from account.models import User
 from core.models import TimeStampMixin, LogicalDeleteMixin
 # from core.utils import maker
@@ -11,8 +13,12 @@ from config import  settings
 class Product(TimeStampMixin, LogicalDeleteMixin):
     name = models.CharField(max_length=250)
     price = models.PositiveIntegerField()
-    title = models.TextField(max_length=250)
+    detail = models.TextField(max_length=250)
     category = models.ForeignKey('Category',on_delete=models.PROTECT, related_name='product_category')
+    warehouse = models.PositiveIntegerField(null=True,blank=True)
+    slug = models.SlugField(unique=True)
+
+
 
 
     expired_at = None
@@ -29,6 +35,15 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
                 discounted_price = self.price - discount.discount
             return discounted_price
 
+    def get_warehouse(self):
+        if self.warehouse == 1:
+            return True
+        else:
+            return False
+
+    def save(self,*args,**kwargs):
+        self.slug = f"{self.name.replace(' ','-')}-{self.id}-{self.category}"
+        super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.category}----{self.name}"
@@ -96,8 +111,10 @@ class DiscountCode(models.Model):
     """
 
     code = models.CharField(max_length=8, blank=True, null=True, unique=True)
-    order = models.OneToOneField(settings.ORDER_MODEL,on_delete=models.CASCADE,null=True,blank=True,related_name='order_discount_code')
-    user = models.OneToOneField(User,on_delete=models.CASCADE,null=True,blank=True,related_name='user_discount_code')
+    # order = models.OneToOneField(settings.ORDER_MODEL,on_delete=models.CASCADE,null=True,blank=True,related_name='order_discount_code')
+    # user = models.OneToOneField(User,on_delete=models.CASCADE,null=True,blank=True,related_name='user_discount_code')
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True,related_name='user_discount_code')
+
 
     def __str__(self):
         return "%s" % (self.code)
