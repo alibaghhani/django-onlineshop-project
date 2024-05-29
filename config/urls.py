@@ -24,5 +24,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/',include('account.urls')),
     path('',include('product.urls')),
-    path('order/',include('order.urls'))
+    path('order/',include('order.urls')),
+    path('apiorder/',include('order.api_urls')),
+    path('api_authentication/',include('account.api_urls'))
 ]
+ # "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNjQ2NjM3NCwiaWF0IjoxNzE2Mzc5OTc0LCJqdGkiOiIyMWIxNjI4YTVlMGQ0MmQzYjE0MTQyNDYzYWRjOTc5NSIsInVzZXJfaWQiOjF9.-Le1hKKa5o-iBwbwkmAydwyubYmGAARlCoeS_hVRMIM",
+ #    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MzgwMjc0LCJpYXQiOjE3MTYzNzk5NzQsImp0aSI6IjYyY2E0N2E4NjQwMzQzYWZiMzUwYTA1OTczMmViNWU1IiwidXNlcl9pZCI6MX0.UfybUnEIfeGltIkdHdKnI2hvTl_sJPSJDkmBMIiFpyw"
