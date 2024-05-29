@@ -15,7 +15,9 @@ class ProductTestCase(TestCase):
 
     def test_product_str_method(self):
         expected_str = f"{self.product.category}----{self.product.name}"
+        print(str(self.product))
         self.assertEqual(str(self.product), expected_str)
+
 
 
 class CategoryTestCase(TestCase):

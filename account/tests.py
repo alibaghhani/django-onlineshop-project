@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from account.models import User  # Replace 'your_app_name' with the actual name of your Django app
+from django.contrib.auth import get_user_model
+from .models import Address, UserProfile
 
 class UserModelTestCase(TestCase):
 
@@ -29,3 +31,37 @@ class UserModelTestCase(TestCase):
             context.exception.messages[0],
             'لطفا یک ایمیل درست وارد کنید'
         )
+
+
+
+
+
+class AddressModelTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(email='test@gmail.com', admin_name='admin', is_superuser=False, is_staff=False)
+
+    def test_address_creation(self):
+        address = Address.objects.create(costumer=self.user, province='Province', city='City', street='Street',
+                                         alley='Alley', house_number='123', full_address='Full Address')
+        self.assertTrue(isinstance(address, Address))
+        self.assertEqual(address.costumer, self.user)
+        self.assertEqual(address.province, 'Province')
+        self.assertEqual(address.city, 'City')
+        self.assertEqual(address.street, 'Street')
+        self.assertEqual(address.alley, 'Alley')
+        self.assertEqual(address.house_number, '123')
+        self.assertEqual(address.full_address, 'Full Address')
+
+
+
+class UserProfileModelTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(email='test@gmail.com', admin_name='admin', is_superuser=False, is_staff=False)
+
+    def test_user_profile_creation(self):
+        user_profile = UserProfile.objects.create(user=self.user, first_name='John', last_name='Doe', gender='he')
+        self.assertTrue(isinstance(user_profile, UserProfile))
+        self.assertEqual(user_profile.user, self.user)
+        self.assertEqual(user_profile.first_name, 'John')
+        self.assertEqual(user_profile.last_name, 'Doe')
+        self.assertEqual(user_profile.gender, 'he')
