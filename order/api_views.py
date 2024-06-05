@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import permission_classes
@@ -6,8 +7,8 @@ from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from account.models import User, Address
+from account.serializers import AddressSerializer
 from config.settings import ORDER_SESSION_ID
 from product.models import Product
 from .cart import Cart
@@ -130,7 +131,8 @@ class CartApiView(APIView):
 
 
 class OrderCreateApiView(APIView):
-    # permission_classes = [IsAdminUser,IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         if request.user.is_anonymous:
             return Response({"error":"anonymous"})
@@ -139,11 +141,40 @@ class OrderCreateApiView(APIView):
                 address=Address.objects.last(),
                 customer=request.user
             )
+
             order = Order.objects.filter(customer=request.user.id)
             serializer = OrderSerializer(instance=order, many=True)
+            keys = [int(i) for i in list(request.session.get(ORDER_SESSION_ID).keys())]
+            for product in keys:
+                print(keys)
+                OrderItem.objects.create(
+                    product = Product.objects.get(id=str(product)),
+                    quantity = request.session.get(ORDER_SESSION_ID).get(str(product)).get('quantity'),
+                    price = request.session.get(ORDER_SESSION_ID).get(str(product)).get('price'),
+                    order = order.last()
+
+                )
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print('viimimvkiermgvkineknv')
+            order = Order.objects.filter(customer=request.user.id)
+            keys = [int(i) for i in list(request.session.get(ORDER_SESSION_ID).keys())]
+            for product in keys:
+                print(keys)
+                if OrderItem.objects.filter(product=keys[-1],order=order.last()).exists():
+                    print('hast')
+                    serializer = OrderSerializer(instance=order, many=True)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                elif not OrderItem.objects.filter(product=product,order=order.last()).exists():
+                    print('nist')
+                    print(keys)
+                    OrderItem.objects.create(
+                        product=Product.objects.get(id=product),
+                        quantity=request.session.get(ORDER_SESSION_ID).get(str(product)).get('quantity'),
+                        price=request.session.get(ORDER_SESSION_ID).get(str(product)).get('price'),
+                        order=order.last()
+
+                    )
             order = Order.objects.filter(customer=request.user.id)
             print(order)
             serializer = OrderSerializer(instance=order, many=True)
@@ -161,3 +192,10 @@ class OrderCreateApiView(APIView):
     #         return Response(serializer.data)
     #     return Response({"ERROR":"BAD REQUEST"},status=status.HTTP_400_BAD_REQUEST)
 
+class AddressChooseAPIView(APIView):
+    authentication_classes = [SessionAuthentication]
+    def get(self,request):
+        address = Address.objects.filter(costumer=request.user.id)
+        print(request.user.id)
+        serializer  = AddressSerializer(instance=address,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
