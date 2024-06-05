@@ -101,11 +101,11 @@ class OrderCreateView(LoginRequiredMixin, View):
 class ChooseAddressView(LoginRequiredMixin,View):
     login_url = reverse_lazy('login_choice')
     def get(self, request):
-        user = request.user.id
-        print('some peace af mind ooooo oooooo')
-        # if Address.objects.filter(customer_address=user):
+        user = request.user
+        print('errorororororor')
         print(Address.objects.filter(customer_address=user).last())
-        addresses = Address.objects.filter(customer_address=user)
+        print('errorroror')
+        addresses = Address.objects.filter(costumer=user)
         print(addresses)
         return render(request, "choose_address.html", {'addresses': addresses})
         # else:
@@ -114,4 +114,4 @@ class ChooseAddressView(LoginRequiredMixin,View):
 
     def post(self, request):
         address_id = request.POST.get('address')
-        return redirect(reverse('order-create', kwargs={'address_id': address_id}))
+        return redirect(reverse_lazy('order-create', kwargs={'address_id': address_id}))
