@@ -15,50 +15,25 @@ from django.shortcuts import render, redirect, get_object_or_404
 from account.models import User, Address, UserProfile
 from config import settings
 
-r = Redis(host='localhost', port=6379, decode_responses=True)
+'---- redis setup ----'
+r = Redis(host='redis', port=6379, decode_responses=True)
+'---------------------'
 
-
-#
-# class SignupView(CreateView):
-#     model = User
-#     template_name = 'signup.html'
-#     fields = ['username', 'password', 'email']
-#
-#     def form_valid(self, form):
-#         print('njnvknjknjkjnkjnjvrntinjvrtnjrijnbirjntbirubnir')
-#         print(self.request.POST)
-#         username = form.cleaned_data['username']
-#         password = form.cleaned_data['password']
-#         email = form.cleaned_data['email']
-#
-#         if User.objects.filter(email=email).exists():
-#             return self.form_invalid(form)
-#
-#         try:
-#             r.set(name=username, value=password)
-#             user = form.save(commit=False)
-#             user.is_active = False
-#             user.save()
-#
-#             otp_code = ''.join([str(randint(0, 9)) for _ in range(6)])
-#             r.set(name=f"{user.id}", value=f"{otp_code}")
-#             print(otp_code)
-#
-#             subject = 'Verification code'
-#             message = f'Your verification code is: {otp_code}'
-#             email_from = settings.EMAIL_HOST_USER
-#             recipient_list = [user.email, ]
-#             send_mail(subject, message, email_from, recipient_list)
-#             return super().form_valid(form)
-#         except IntegrityError:
-#             return self.form_invalid(form)
-#
-#     @property
-#     def success_url(self):
-#         return reverse_lazy('verify_email', kwargs={'email': self.object.email})
+"""---- signup view ----"""
 
 
 class SignupView(View):
+    """
+    In the get method,
+    we render the page for the user,
+    and then in the post method,
+    we get the user's information,
+    and then check whether the information already exists,
+    and then in Redis, we store the user's name and lastname in Redis,
+    and then enter the user record in the database.
+    We generate the code, email it and save it in Redis.
+    """
+
     template_name = 'signup.html'
 
     def get(self, request, *args, **kwargs):
@@ -69,16 +44,13 @@ class SignupView(View):
         password = request.POST.get('password')
         email = request.POST.get('email')
 
-
         if not all([username, password, email]):
             messages.error(request, "please fill al blanks")
             return render(request, self.template_name)
 
-
         if User.objects.filter(email=email).exists():
             messages.error(request, 'this email already exist')
             return render(request, self.template_name)
-
 
         if User.objects.filter(username=username).exists():
             messages.error(request, 'this username already exist')
@@ -109,10 +81,12 @@ class SignupView(View):
             messages.error(request, 'An error occurred')
 
 
+"""--------------------------------------------------------------------------------------------"""
+
+"""---- sign in with email view ---------------------------------------------------------------"""
+
+
 class SignInWithEmail(View):
-    # def dispatch(self, request, *args, **kwargs):
-    #     if request.user.is_authenticated:
-    #         return redirect('products')
 
     def get(self, request):
         return render(request, 'login_with_email.html')
@@ -140,11 +114,12 @@ class SignInWithEmail(View):
             return render(request, 'login_with_email.html')
 
 
-class SignInWithUsernameAndPassword(View):
+"""-----------------------------------------------------------------------------------------------"""
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     if request.user.is_authenticated:
-    #         return redirect('products')
+"""---- signin with username and password---------------------------------------------------------"""
+
+
+class SignInWithUsernameAndPassword(View):
 
     def get(self, request):
         return render(request, 'login_with_username_and_password.html')
@@ -163,6 +138,11 @@ class SignInWithUsernameAndPassword(View):
             return render(request, 'login_with_username_and_password.html')
 
 
+"""--------------------------------------------------------------------------------------------------"""
+
+"""---- verify email and otp to authenticate --------------------------------------------------------"""
+
+
 def verify_email(request, email):
     if request.method == 'POST':
         user_otp = request.POST.get('otp_code')
@@ -174,15 +154,16 @@ def verify_email(request, email):
             password = r.get(user.username)
             print(user.username, password)
             login(request, user)
-            # request.session['user_information'] = {
-            #     "username" : user.username,
-            #     "email" : user.email
-            # }
             return redirect('products')
         else:
             return render(request, 'verify_email.html', {'error_message': 'invalid otp code.'})
     else:
         return render(request, 'verify_email.html')
+
+
+"""------------------------------------------------------------------------------------------------"""
+
+"""---- logout user view --------------------------------------------------------------------------"""
 
 
 class LogoutUser(View):
@@ -191,6 +172,11 @@ class LogoutUser(View):
             logout(request)
             messages.info(request, "You have been logged out successfully.")
         return redirect('products')
+
+
+"""-----------------------------------------------------------------------------------------------"""
+
+"""---- user profile view for displaying user's information and addresses  ----------------------"""
 
 
 class UserProfileView(DetailView):
@@ -207,6 +193,12 @@ class UserProfileView(DetailView):
         context['user_information'] = user_information
         return context
 
+
+"""----------------------------------------------------------------------------------------------"""
+
+"""displaying all user's addresses in address page ----------------------------------------------"""
+
+
 class AllUsersAddresses(ListView):
     model = Address
     template_name = 'users_addresses.html'
@@ -220,8 +212,18 @@ class AllUsersAddresses(ListView):
         return context
 
 
+"""---------------------------------------------------------------------------------------------"""
+
+"""---- login choice (login with email or login with username) ---------------------------------"""
+
+
 class LoginChoice(TemplateView):
     template_name = 'login_choice.html'
+
+
+"""---------------------------------------------------------------------------------------------"""
+
+"""---- address view for displaying all user's addresses ---------------------------------------"""
 
 
 class AddAddressView(CreateView):
@@ -235,6 +237,10 @@ class AddAddressView(CreateView):
         return super().form_valid(form)
 
 
+"""-------------------------------------------------------------------------------------------"""
+
+"""---- delete address view ------------------------------------------------------------------"""
+
 
 class DeleteAddressView(LoginRequiredMixin, DeleteView):
     model = Address
@@ -243,6 +249,11 @@ class DeleteAddressView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return self.request.user.costumer_address.all()
+
+
+"""------------------------------------------------------------------------------------------"""
+
+"""---- change profile view -----------------------------------------------------------------"""
 
 
 class ChaneProfileView(UpdateView):
@@ -256,6 +267,10 @@ class ChaneProfileView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('profile', kwargs={'pk': self.object.user.pk})
 
+
+"""-----------------------------------------------------------------------------------------"""
+
+"""views related to reset password ---------------------------------------------------------"""
 
 
 class ResetPasswordView(views.PasswordResetView):
@@ -276,13 +291,16 @@ class UserPasswordResetConfirmView(views.PasswordResetConfirmView):
 class UserPasswordResetCompleteView(views.PasswordResetCompleteView):
     template_name = 'reset_password/password_reset_complete.html'
 
+
+"""-----------------------------------------------------------------------------------------"""
+
+
 class AdminPannel(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_superuser == False:
             return HttpResponse('nigga fuck that child')
         return super().dispatch(request, *args, **kwargs)
-
 
     def get(self, request, **kwargs):
         return HttpResponse('my admin nigga')

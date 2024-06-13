@@ -1,10 +1,14 @@
-from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.test import TestCase
+
 from account.models import User  # Replace 'your_app_name' with the actual name of your Django app
-from django.contrib.auth import get_user_model
 from .models import Address, UserProfile
 
+
 class UserModelTestCase(TestCase):
+    """
+    user model testcase
+    """
 
     def test_valid_email(self):
         user = User.objects.create(
@@ -33,10 +37,11 @@ class UserModelTestCase(TestCase):
         )
 
 
-
-
-
 class AddressModelTestCase(TestCase):
+    """
+    address model testcase
+    """
+
     def setUp(self):
         self.user = User.objects.create(email='test@gmail.com', admin_name='admin', is_superuser=False, is_staff=False)
 
@@ -53,8 +58,11 @@ class AddressModelTestCase(TestCase):
         self.assertEqual(address.full_address, 'Full Address')
 
 
-
 class UserProfileModelTestCase(TestCase):
+    """
+    profile model testcase
+    """
+
     def setUp(self):
         self.user = User.objects.create(email='test@gmail.com', admin_name='admin', is_superuser=False, is_staff=False)
 

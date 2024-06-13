@@ -1,12 +1,11 @@
 from django.contrib.auth.models import AbstractUser
-from core.models import TimeStampMixin, LogicalDeleteMixin
 from django.core.validators import RegexValidator
 from django.db import models
+
+from core.models import TimeStampMixin, LogicalDeleteMixin
 from .manager import UserManager
 
 
-# Create your models here.
-# Create your models here.
 class User(AbstractUser):
     """
     custom User model
@@ -29,7 +28,7 @@ class User(AbstractUser):
     email = models.EmailField(max_length=250, validators=[email_validator], unique=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    admin_name = models.CharField(max_length=250,null=True,blank=True)
+    admin_name = models.CharField(max_length=250, null=True, blank=True)
 
     objects = UserManager()
 
@@ -58,16 +57,20 @@ class Address(models.Model):
     house_number = models.CharField(max_length=4)
     full_address = models.TextField(max_length=250)
 
-
     def __str__(self):
         return f"{self.province} {self.city}"
 
-class UserProfile(TimeStampMixin,LogicalDeleteMixin):
+
+class UserProfile(TimeStampMixin, LogicalDeleteMixin):
+    """
+    User's profile model for creating profile for user
+    """
+
     GENDER_CHOICE = (
         ('he', 'male'),
         ('she', 'female')
     )
-    first_name = models.CharField(max_length=250,null=True,blank=True)
-    last_name = models.CharField(max_length=250,null=True,blank=True)
+    first_name = models.CharField(max_length=250, null=True, blank=True)
+    last_name = models.CharField(max_length=250, null=True, blank=True)
     gender = models.CharField(choices=GENDER_CHOICE, max_length=250, null=True)
-    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='user_profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
