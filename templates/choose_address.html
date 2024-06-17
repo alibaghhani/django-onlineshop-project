@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>choose_address</title>
+</head>
+<body>
+<form method="post">
+    {% csrf_token %}
+    <label for="address">Choose Address:</label>
+    <select name="address" id="address">
+        {% for address in addresses %}
+            <option value="{{ address.id }}">{{ address.street }}, {{ address.city }}, {{ address.country }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

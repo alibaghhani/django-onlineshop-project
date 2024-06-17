@@ -12,7 +12,7 @@
     <style>
         :root {
             --size: 400px;
-            --blue: #111111FF;
+            --blue: #100f0f;
             --lb: rgba(0, 0, 0, 0.5);
         }
 
@@ -218,18 +218,18 @@
         <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <a href="{% url 'order' %}" class="bg-white-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                <a href="#" class="bg-white-900 text-white rounded-md px-3 py-2 text-sm font-medium"
                    aria-current="page">cart {{ order|length }}</a>
                 <a href="{% url 'category_tree' %}"
-                   class="text-white hover:bg-blue-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
+                   class="bg-white-900 text-white hover:bg-white-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">categories</a>
                 <a href="#"
-                   class="text-white hover:bg-blue-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">search</a>
+                   class="bg-white-900 text-white hover:bg-white-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">search</a>
                 {% if user.is_authenticated %}
                     <a href="{% url 'profile' request.user.pk %}"
-                       class="text-white hover:bg-blue-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">profile</a>
+                       class="bg-white-900 text-white hover:bg-white-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">profile</a>
                 {% else %}
                     <a href="{% url 'login_choice' %}"
-                       class="text-white hover:bg-blue-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">login</a>
+                       class="bg-white-900 text-white hover:bg-white-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">login</a>
                 {% endif %}
             </div>
         </div>
@@ -238,39 +238,40 @@
     </div>
 </div>
 <body>
-{% for product, images in product_images.items %}
-    <div class="container shoe">
-        {% if product.products_post.last %}
-            <img src="{{ product.products_post.last.image.url }}" alt="green apple slice" class="productImage shoeImg">
-        {% endif %}
-        <div class="size shoeSize">
-            <a href="{% url 'product_detail' product.slug %}">
-                <h4>DETAIL</h4>
-
-            </a>
-
-        </div>
-        <div class="price shoePrice">
-            <h4>PRICE</h4>
-            {% if product.product_discount.all %}
-                <span style="text-decoration: line-through;">{{ product.price }}</span>
-                <span>{{ product.discounted_price }}</span>
-            {% else %}
-                <span>{{ product.price }}</span>
+{% for product, images in product_data %}
+        <div class="container shoe">
+            {% if product.products_post.last %}
+                <img src="{{ product.products_post.last.image.url }}" alt="green apple slice"
+                     class="productImage shoeImg">
             {% endif %}
+            <div class="size shoeSize">
+                <a href="{% url 'product_detail' product.id %}">
+                    <h4>DETAIL</h4>
+
+                </a>
+
+            </div>
+            <div class="price shoePrice">
+                <h4>PRICE</h4>
+                {% if product.product_discount.all %}
+                    <span style="text-decoration: line-through;">{{ product.price }}</span>
+                    <span>{{ product.discounted_price }}</span>
+                {% else %}
+                    <span>{{ product.price }}</span>
+                {% endif %}
+            </div>
+            <div class="color shoeColor">
+                <h4>COLORS</h4>
+                <ul>
+                    <li><span class="blue"></span></li>
+                    <li><span class="yellow"></span></li>
+                    <li><span class="red"></span></li>
+                </ul>
+            </div>
+            <div class="productName shoeName bg-black-600">
+                {{ product.name }}
+            </div>
         </div>
-        <div class="color shoeColor">
-            <h4>COLORS</h4>
-            <ul>
-                <li><span class="blue"></span></li>
-                <li><span class="yellow"></span></li>
-                <li><span class="red"></span></li>
-            </ul>
-        </div>
-        <div class="productName shoeName">
-            {{ product.name }}
-        </div>
-    </div>
 {% endfor %}
 </body>
 </html>

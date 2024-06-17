@@ -1,12 +1,11 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView, DetailView
 from order.forms import CartItemQuantityForm
-from order.models import Order, OrderItem
 from .models import Product, Image, Category
 
 
+# product list view for displaying products
 class ProductsListView(ListView):
     model = Product
     template_name = 'home.html'
@@ -22,11 +21,13 @@ class ProductsListView(ListView):
         return context
 
 
+# for displaying product's detail
 class ProductDetailView(DetailView):
     model = Product
     context_object_name = 'product'
     template_name = 'product_detail.html'
     lookup_field = 'slug'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form = CartItemQuantityForm()
@@ -34,22 +35,7 @@ class ProductDetailView(DetailView):
         return context
 
 
-
-#
-#
-# class CategoryTreeView(View):
-#     def get(self, request):
-#         categories = Category.objects.filter(sub_category__isnull=True)
-#
-#         category_and_subcategory = {}
-#         for category in categories:
-#             if category.sub_category:
-#                 subcategories = category.sub_category.all()
-#             else:
-#                 subcategories = None
-#             category_and_subcategory[category] = subcategories
-#
-#         return render(request, 'category_tree.html', {'category_dict': category_and_subcategory})
+# for display category tree
 class CategoryTreeView(ListView):
     model = Category
     template_name = 'category_tree.html'
@@ -71,17 +57,7 @@ class CategoryTreeView(ListView):
         return context
 
 
-# class SubcategoryAndProducts(View):
-#     def get(self,request,id):
-#         category = Category.objects.get(id=id)
-#         products = Product.objects.filter(category=category)
-#         product_images = {}
-#         for product in products:
-#             product_images[product] = Image.objects.filter(product=product)
-#         return render(self.request,'category_products.html',{'category': category,'products':products,"product_image":product_images})
-#
-#
-
+# for displaying each category products
 class SubcategoryAndProducts(View):
     def get(self, request, id):
         category = Category.objects.get(id=id)
@@ -91,5 +67,3 @@ class SubcategoryAndProducts(View):
             images = Image.objects.filter(product=product)
             product_data.append((product, images))
         return render(request, 'category_products.html', {'category': category, 'product_data': product_data})
-
-
