@@ -15,18 +15,35 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.template.context_processors import static
-from django.urls import path,include
+from django.urls import path, include
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
-from config import settings
-
+# ---- swagger schema for swagger setup
+schema_view = get_schema_view(
+    openapi.Info(
+        title="django online shop swagger",
+        default_version='v1',
+        description="My API description",
+        terms_of_service="https://www.example.com/terms/",
+        contact=openapi.Contact(email="contact@example.com"),
+        license=openapi.License(name="Awesome License"),
+    ),
+    public=True,
+    # permission_classes=(permissions.AllowAny,),
+)
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('account/',include('account.urls')),
-    path('',include('product.urls')),
-    path('order/',include('order.urls')),
-    path('apiorder/',include('order.api_urls')),
-    path('api_authentication/',include('account.api_urls'))
+    path('account/', include('account.urls')),
+    path('', include('product.urls')),
+    path('order/', include('order.urls')),
+    path('apiorder/', include('order.api_urls')),
+    path('api_authentication/', include('account.api_urls')),
+
+
 ]
- # "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNjQ2NjM3NCwiaWF0IjoxNzE2Mzc5OTc0LCJqdGkiOiIyMWIxNjI4YTVlMGQ0MmQzYjE0MTQyNDYzYWRjOTc5NSIsInVzZXJfaWQiOjF9.-Le1hKKa5o-iBwbwkmAydwyubYmGAARlCoeS_hVRMIM",
- #    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MzgwMjc0LCJpYXQiOjE3MTYzNzk5NzQsImp0aSI6IjYyY2E0N2E4NjQwMzQzYWZiMzUwYTA1OTczMmViNWU1IiwidXNlcl9pZCI6MX0.UfybUnEIfeGltIkdHdKnI2hvTl_sJPSJDkmBMIiFpyw"
+
+urlpatterns +=  [path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+                 path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+]

@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'product',
     'order',
     'rest_framework',
-    'jazzmin'
+    'jazzmin',
+    'drf_yasg'
 ]
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
@@ -72,6 +73,9 @@ TEMPLATES = [
         },
     },
 ]
+TEMPLATE_LOADERS = (
+'django.template.loaders.eggs.Loader',
+)
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -159,25 +163,35 @@ CELERY_TIMEZONE = 'Asia/Tehran'
 
 
 # log level for displaying in commandline for docker ------------------------------------------------
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'DEBUG',
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
+# ----------------------------------------------------------------------------------------------------
+
+# swagger setting-------------------------------------------------------------------------------------
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        }
+    }
 }
-#----------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------
