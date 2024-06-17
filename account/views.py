@@ -15,13 +15,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from account.models import User, Address, UserProfile
 from config import settings
 
-'---- redis setup ----'
+# ---- redis setup ----
 r = Redis(host='redis', port=6379, decode_responses=True)
-'---------------------'
 
-"""---- signup view ----"""
-
-
+# ---- signup view ----
 class SignupView(View):
     """
     In the get method,
@@ -81,11 +78,8 @@ class SignupView(View):
             messages.error(request, 'An error occurred')
 
 
-"""--------------------------------------------------------------------------------------------"""
 
-"""---- sign in with email view ---------------------------------------------------------------"""
-
-
+# ---- sign in with email view ----
 class SignInWithEmail(View):
 
     def get(self, request):
@@ -114,11 +108,8 @@ class SignInWithEmail(View):
             return render(request, 'login_with_email.html')
 
 
-"""-----------------------------------------------------------------------------------------------"""
 
-"""---- signin with username and password---------------------------------------------------------"""
-
-
+#---- signin with username and password ----
 class SignInWithUsernameAndPassword(View):
 
     def get(self, request):
@@ -138,11 +129,8 @@ class SignInWithUsernameAndPassword(View):
             return render(request, 'login_with_username_and_password.html')
 
 
-"""--------------------------------------------------------------------------------------------------"""
 
-"""---- verify email and otp to authenticate --------------------------------------------------------"""
-
-
+#---- verify email and otp to authenticate ----
 def verify_email(request, email):
     if request.method == 'POST':
         user_otp = request.POST.get('otp_code')
@@ -161,11 +149,8 @@ def verify_email(request, email):
         return render(request, 'verify_email.html')
 
 
-"""------------------------------------------------------------------------------------------------"""
 
-"""---- logout user view --------------------------------------------------------------------------"""
-
-
+#---- logout user view ----
 class LogoutUser(View):
     def get(self, request):
         if request.user.is_authenticated:
@@ -174,11 +159,8 @@ class LogoutUser(View):
         return redirect('products')
 
 
-"""-----------------------------------------------------------------------------------------------"""
 
-"""---- user profile view for displaying user's information and addresses  ----------------------"""
-
-
+#---- user profile view for displaying user's information and addresses  ----
 class UserProfileView(DetailView):
     model = User
     template_name = 'profile.html'
@@ -194,11 +176,8 @@ class UserProfileView(DetailView):
         return context
 
 
-"""----------------------------------------------------------------------------------------------"""
 
-"""displaying all user's addresses in address page ----------------------------------------------"""
-
-
+#---displaying all user's addresses in address page ----
 class AllUsersAddresses(ListView):
     model = Address
     template_name = 'users_addresses.html'
@@ -212,20 +191,14 @@ class AllUsersAddresses(ListView):
         return context
 
 
-"""---------------------------------------------------------------------------------------------"""
 
-"""---- login choice (login with email or login with username) ---------------------------------"""
-
-
+# ---- login choice (login with email or login with username) ----
 class LoginChoice(TemplateView):
     template_name = 'login_choice.html'
 
 
-"""---------------------------------------------------------------------------------------------"""
 
-"""---- address view for displaying all user's addresses ---------------------------------------"""
-
-
+# ---- address view for displaying all user's addresses ----
 class AddAddressView(CreateView):
     model = Address
     template_name = 'add_address.html'
@@ -237,11 +210,8 @@ class AddAddressView(CreateView):
         return super().form_valid(form)
 
 
-"""-------------------------------------------------------------------------------------------"""
 
-"""---- delete address view ------------------------------------------------------------------"""
-
-
+#---- delete address view -----
 class DeleteAddressView(LoginRequiredMixin, DeleteView):
     model = Address
     success_url = reverse_lazy('delete_addresses_success')
@@ -251,11 +221,8 @@ class DeleteAddressView(LoginRequiredMixin, DeleteView):
         return self.request.user.costumer_address.all()
 
 
-"""------------------------------------------------------------------------------------------"""
 
-"""---- change profile view -----------------------------------------------------------------"""
-
-
+#---- change profile view -----
 class ChaneProfileView(UpdateView):
     model = UserProfile
     fields = ['first_name', 'last_name', 'gender']
@@ -268,9 +235,8 @@ class ChaneProfileView(UpdateView):
         return reverse_lazy('profile', kwargs={'pk': self.object.user.pk})
 
 
-"""-----------------------------------------------------------------------------------------"""
 
-"""views related to reset password ---------------------------------------------------------"""
+#---- views related to reset password ----
 
 
 class ResetPasswordView(views.PasswordResetView):
@@ -292,7 +258,6 @@ class UserPasswordResetCompleteView(views.PasswordResetCompleteView):
     template_name = 'reset_password/password_reset_complete.html'
 
 
-"""-----------------------------------------------------------------------------------------"""
 
 
 class AdminPannel(TemplateView):
