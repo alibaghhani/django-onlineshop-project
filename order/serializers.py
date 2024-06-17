@@ -1,15 +1,15 @@
 from rest_framework import serializers
 from account.serializers import AddressSerializer
-from .models import OrderItem,Order
+from .models import OrderItem, Order
 from product.models import Product
 
-
+# order-item serializer for serializing orderitems
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = '__all__'
 
-
+# order serializer for serializing order
 class OrderSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
     order_items = serializers.SerializerMethodField()
@@ -23,14 +23,15 @@ class OrderSerializer(serializers.ModelSerializer):
         orderitems = obj.order_items.all()
         return OrderItemSerializer(instance=orderitems, many=True).data
 
-    def get_address(self,obj):
-        address_ = obj.address.all()
-        return AddressSerializer(instance=address_,many=True).data
+    def get_address(self, obj):
+        address = obj.address
+        return AddressSerializer(instance=address).data
 
-
-
-
+# product serializer for serializing products
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+
+
