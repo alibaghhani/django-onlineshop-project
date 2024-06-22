@@ -194,4 +194,61 @@ class SilverUsers(TopUsersFactory):
         send_mail(subject, message, email_from, recipient_list)
 
 
+class BronzeUsers(TopUsersFactory):
+    def __init__(self):
+        logging.info('we are now on bronze user')
 
+    def generate_discount_token(self, user):
+        code = get_random_string(length=5)
+        discount = 10
+        user = user
+        DiscountCode.objects.create(
+            code=code,
+            discount=discount,
+            type_of_discount='percentage',
+            user_id=user.id
+        )
+        return code
+
+    def check_is_paid_orders(self, user):
+        logging.info('Checking paid orders for BronzeUsers')
+        user_payments = {}
+        order_items = OrderItem.objects.filter(order__customer_id=user, order__is_paid=True)
+        for item in order_items:
+            if item.id not in user_payments:
+                user_payments[item.id] = item.price
+        return user_payments
+
+    def calculate_final_amount(self, payments: dict):
+        logging.info('Calculating final amount for BronzeUsers')
+        return sum(payments.values())
+
+    def user_type(self, user, amount: int):
+        logging.info(f'Determining user type for BronzeUsers: user={user}, amount={amount}')
+        logging.info(type(amount))
+        logging.info("if statement started")
+        try:
+            amount = int(amount)
+            if 10000 <= int(amount) < 50000:
+                logging.info("inside the if statement")
+                profile = UserProfile.objects.filter(user_id=user.id)
+                logging.info(f'user type: {profile.type}')
+                profile.update(type="bronze")
+                profile.save()
+                logging.info(f'New user type: {profile.type}')
+                self.generate_discount_token(user)
+                logging.info("after generating token")
+                return profile.type
+        except ValueError:
+            logging.info(f'Invalid amount value: {amount}')
+
+    def send_notification(self, user: User, token):
+        logging.info(f'Sending notification to {user.username} (BronzeUsers)')
+        subject = f'congratulations {user.username}'
+        message = ("you have reached 100000 order amount "
+                   f"here's your discount coupon {token} "
+                   "you are now a Bronze user")
+
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [user.email]
+        send_mail(subject, message, email_from, recipient_list)
