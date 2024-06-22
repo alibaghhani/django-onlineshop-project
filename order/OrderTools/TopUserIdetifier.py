@@ -90,4 +90,55 @@ class BrilliantUsers(TopUsersFactory):
         send_mail(subject, message, email_from, recipient_list)
 
 
+class GoldUsers(TopUsersFactory):
+    def __init__(self):
+        logging.info('we are now on gold user')
+
+    def generate_discount_token(self, user):
+        code = get_random_string(length=5)
+        discount = 50
+        user = user
+        DiscountCode.objects.create(
+            code=code,
+            discount=discount,
+            type_of_discount='percentage',
+            user_id=user.id
+        )
+        return code
+
+    def check_is_paid_orders(self, user):
+        logging.info('Checking paid orders for GoldUsers')
+        user_payments = {}
+        order_items = OrderItem.objects.filter(order__customer_id=user, order__is_paid=True)
+        for item in order_items:
+            if item.id not in user_payments:
+                user_payments[item.id] = item.price
+        return user_payments
+
+    def calculate_final_amount(self, payments: dict):
+        logging.info('Calculating final amount for GoldUsers')
+        return sum(payments.values())
+
+    def user_type(self, user, amount: int):
+        logging.info(f'Determining user type for GoldUsers: user={user}, amount={amount}')
+        if 100000 <= amount < 500000:
+            profile = UserProfile.objects.get(user_id=user)
+            logging.info(f'Old user type: {profile.type}')
+            profile.type = 'Gold'
+            profile.save()
+            logging.info(f'New user type: {profile.type}')
+            self.generate_discount_token(user)
+            return profile.type
+
+    def send_notification(self, user: User, token: str):
+        logging.info(f'Sending notification to {user.username} (GoldUsers)')
+        subject = f'congratulations {user.username}'
+        message = ("you have reached 100000 order amount "
+                   f"here's your discount coupon {token} "
+                   "you are now a Gold user")
+
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [user.email]
+        send_mail(subject, message, email_from, recipient_list)
+
 
