@@ -1,0 +1,91 @@
+
+body {
+    background-color: #FF9A8B;
+    background-image: linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+    margin: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.flexbox .flex-card-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.flexbox .flex-card-listitem {
+    display: flex;
+    background-color: #fff;
+    padding: 1em;
+    border-radius: 10px;
+}
+
+.flexbox .flex-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-card-list li {
+    width: 400px;
+    margin: .55em;
+}
+
+.flexbox .flex-card-content {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+}
+
+.flexbox .flex-card-content p {
+    flex: 1 0 auto;
+    font-weight: 900;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.flex-card-button {
+    background-color: #FF6A88;
+    padding: 1em;
+    text-align: center;
+    text-decoration: none;
+    color: #202124;
+    border-radius: 10px;
+    width: 150px;
+    font-weight: 900;
+}
+
+.flex-card-button:hover {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.flex-card-image img {
+    width: 400Px;
+    height: 250px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.flex-card-heading {
+    border: 3px solid #FF9A8B;
+    padding: 5px;
+    width: 100px;
+    border-radius: 5px;
+    text-align: center;
+    color: #202124
+}
+
+.credit {
+    text-align: center;
+    color: #000;
+    font-weight: 900;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.credit a {
+    text-decoration: none;
+    color: #202124;
+    font-weight: bold;
+}
+
