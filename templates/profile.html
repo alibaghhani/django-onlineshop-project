@@ -67,6 +67,8 @@
                    class="bg-white-500 text-red-500 hover:bg-white-700  font-bold py-2 px-4 rounded">
   logout
 </a>
+                <p class="text-white">{{ user.user_profile.type }} user</p>
+                <a class="text-red" href="{% url 'user-orders' %}">your orders</a>
             </span></div>
         </div>
         <div class="col-md-5 border-right">
