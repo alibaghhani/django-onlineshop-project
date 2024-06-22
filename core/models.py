@@ -15,11 +15,12 @@ class TimeStampMixin(models.Model):
     """
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True,editable=False)
-    expired_at = models.DateTimeField(auto_now=True,editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
+    expired_at = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
         abstract = True
+
 
 class LogicalDeleteMixin(models.Model):
     """
@@ -33,6 +34,7 @@ class LogicalDeleteMixin(models.Model):
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
     objects = LogicalManager()
+
     def delete(self, using=None, keep_parents=False):
         self.is_deleted = True
         self.save(update_fields=["is_deleted"])
@@ -43,6 +45,3 @@ class LogicalDeleteMixin(models.Model):
 
     class Meta:
         abstract = True
-
-
-
