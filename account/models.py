@@ -2,7 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 
-from core.models import TimeStampMixin, LogicalDeleteMixin
+from core.models import LogicalDeleteMixin, TimeStampMixin
+
 from .manager import UserManager
 
 
@@ -74,3 +75,4 @@ class UserProfile(TimeStampMixin, LogicalDeleteMixin):
     last_name = models.CharField(max_length=250, null=True, blank=True)
     gender = models.CharField(choices=GENDER_CHOICE, max_length=250, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
+    type = models.CharField(max_length=11, blank=True, null=True, default='regular')

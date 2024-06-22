@@ -1,7 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from account.models import User  # Replace 'your_app_name' with the actual name of your Django app
+from account.models import \
+    User  # Replace 'your_app_name' with the actual name of your Django app
+
 from .models import Address, UserProfile
 
 

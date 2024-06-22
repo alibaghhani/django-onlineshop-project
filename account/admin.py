@@ -1,7 +1,9 @@
 from django.contrib import admin
-from .models import User, Address, UserProfile
-from product.models import Image, Category, Product, Discount, DiscountCode
-from order.models import OrderItem, Order
+
+from order.models import Order, OrderItem
+from product.models import Category, Discount, DiscountCode, Image, Product
+
+from .models import Address, User, UserProfile
 
 # Register your models here.
 admin.site.register(Address)
@@ -13,9 +15,6 @@ admin.site.register(OrderItem)
 admin.site.register(Discount)
 admin.site.register(DiscountCode)
 admin.site.register(UserProfile)
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import User
 
 
 class CustomUserAdmin(admin.ModelAdmin):

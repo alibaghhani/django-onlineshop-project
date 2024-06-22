@@ -1,9 +1,8 @@
 from django.contrib.auth.models import BaseUserManager
-from django.db import models
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email=None, username=None, admin_name=None ,password=None, **extra_fields):
+    def create_user(self, email=None, username=None, admin_name=None, password=None, **extra_fields):
         """
         Create and save a regular User with the given email, username, and password.
         """
@@ -29,7 +28,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email,username=None, admin_name=None ,password=None, **extra_fields):
+    def create_superuser(self, email, username=None, admin_name=None, password=None, **extra_fields):
         """
         create superuser
         """
@@ -41,5 +40,4 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email,username, admin_name ,password, **extra_fields)
-
+        return self.create_user(email, username, admin_name, password, **extra_fields)
