@@ -1,19 +1,12 @@
 #! /usr/bin/env bash
 
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <file_path> <commit_message>"
-    exit 1
-fi
+echo "enter the file path"
+read filepath
 
-file_path=$1
-commit_message=$2
+echo "please enter the commit message"
+read message
 
-if [ ! -f "$file_path" ]; then
-    echo "Error: File does not exist"
-    exit 1
-fi
+git add $filepath
+git commit -m "$message"
 
-git add $file_path
-git commit -m "$commit_message"
-
-echo "Changes committed successfully"
+echo "file $filepath with message $message was committed"
