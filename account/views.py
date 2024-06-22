@@ -275,3 +275,12 @@ class UserOrdersView(ListView):
         return Order.objects.filter(customer_id=self.request.user.id)
 
 
+class UserOrderDetailView(DetailView):
+    model = Order
+    template_name = 'user_orders_detail.html'
+    context_object_name = 'order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
