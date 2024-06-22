@@ -1,6 +1,11 @@
 import logging
 
 
+class CustomLogFilter(logging.Filter):
+    def filter(self, record):
+        if 'Internal Server Error' in record.getMessage():
+            return False
+        return True
 
 
 def log(func):
