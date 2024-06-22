@@ -16,6 +16,18 @@ services:
         - REDIS_HOST=redis
         networks:
           - live
+    db:
+        image: "postgres"
+        restart: always
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_PASSWORD=1234
+            - POSTGRES_USER=ali
+            - POSTGRES_DB=django_project
+
+
+
 networks:
   live:
 
