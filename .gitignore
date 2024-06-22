@@ -31,3 +31,4 @@ __pycache__/
 
 # Poetry
 poetry.lock
+order/logs/order_logs.log
