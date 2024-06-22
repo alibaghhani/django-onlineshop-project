@@ -33,7 +33,7 @@ urlpatterns = [
     path('change_personal_information/<int:pk>/', ChaneProfileView.as_view(), name="change_profile"),
     path('userorder/', UserOrdersView.as_view(), name='user-orders'),
     path('userorderdetail/<int:pk>/', UserOrderDetailView.as_view(), name='user-order-detail'),
-
+    path('deleteorder/<int:pk>/', DeleteUserOrder.as_view(), name='delete-user-order'),
 
     # routes related to user's address-------------
 
