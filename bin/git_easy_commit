@@ -1,10 +1,7 @@
 #! /usr/bin/env bash
 
-echo "enter the file path"
-read filepath
-
-echo "please enter the commit message"
-read message
+read -e -p "Enter the file path: " -i "" filepath
+read -p "Please enter the commit message: " message
 
 git add $filepath
 git commit -m "$message"
