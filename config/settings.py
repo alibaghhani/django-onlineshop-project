@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import logging
 import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,7 +43,8 @@ INSTALLED_APPS = [
     'order',
     'rest_framework',
     'jazzmin',
-    'drf_yasg'
+    'drf_yasg',
+    'django_celery_beat'
 ]
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
@@ -74,7 +77,7 @@ TEMPLATES = [
     },
 ]
 TEMPLATE_LOADERS = (
-'django.template.loaders.eggs.Loader',
+    'django.template.loaders.eggs.Loader',
 )
 
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -153,37 +156,40 @@ REST_FRAMEWORK = {
 
 # CELERY SETTINGS
 # ----------------------------------------------------------------------------------------------------
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TIMEZONE = 'Asia/Tehran'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_RESULT_EXPIRES = timedelta(days=1)
+# CELERY_TASK_ALWAYS_EAGER = False
+# CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 # ---------------------------------------------------------------------------------------------------
 
 
 # log level for displaying in commandline for docker ------------------------------------------------
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#         },
-#     },
-#     'root': {
-#         'handlers': ['console'],
-#         'level': 'DEBUG',
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 # ----------------------------------------------------------------------------------------------------
 
 # swagger setting-------------------------------------------------------------------------------------
@@ -194,4 +200,4 @@ SWAGGER_SETTINGS = {
         }
     }
 }
-#-----------------------------------------------------------------------------------------------------
+
