@@ -10,6 +10,7 @@ class Cart:
     login or creat account
 
     """
+
     def __init__(self, request):
         self.session = request.session
         order = self.session.get(ORDER_SESSION_ID)
@@ -58,3 +59,7 @@ class Cart:
             return self.order
         else:
             raise RuntimeError('object does not exists')
+
+    def delete(self):
+        self.session[ORDER_SESSION_ID] = {}
+        self.save_session()

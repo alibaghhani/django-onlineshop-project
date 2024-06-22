@@ -1,13 +1,17 @@
 from rest_framework import serializers
+
 from account.serializers import AddressSerializer
-from .models import OrderItem, Order
 from product.models import Product
+
+from .models import Order, OrderItem
+
 
 # order-item serializer for serializing orderitems
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = '__all__'
+
 
 # order serializer for serializing order
 class OrderSerializer(serializers.ModelSerializer):
@@ -27,11 +31,9 @@ class OrderSerializer(serializers.ModelSerializer):
         address = obj.address
         return AddressSerializer(instance=address).data
 
+
 # product serializer for serializing products
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
-
-
-

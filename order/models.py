@@ -1,8 +1,9 @@
-from django.core.validators import RegexValidator
 from django.db import models
-from account.models import User, Address
-from core.models import TimeStampMixin, LogicalDeleteMixin
-from product.models import Product as ProductModel, Discount as DiscountModel
+
+from account.models import Address, User
+from core.models import LogicalDeleteMixin, TimeStampMixin
+from product.models import Discount as DiscountModel
+from product.models import Product as ProductModel
 
 
 class Order(TimeStampMixin, LogicalDeleteMixin):
@@ -14,8 +15,6 @@ class Order(TimeStampMixin, LogicalDeleteMixin):
     address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='customer_address')
     is_paid = models.BooleanField(default=False)
     is_canceled = models.BooleanField(default=False)
-
-
 
     def get_total_price(self):
         return sum(order_item.get_total_price() for order_item in self.order_items.all())
@@ -42,7 +41,3 @@ class OrderItem(TimeStampMixin, LogicalDeleteMixin):
             return self.get_total_price() - (self.quantity * self.discount)
         else:
             return None
-
-
-
-
