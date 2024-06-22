@@ -1,22 +1,32 @@
+import logging
 from random import randint
+from sqlite3 import IntegrityError
+
+from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import views
+from django.contrib.auth import login, logout, views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
-from django.urls import reverse_lazy, reverse
-from redis import Redis
-from django.views.generic import View, DetailView, UpdateView, ListView, CreateView, TemplateView, DeleteView
-from django.contrib.auth import login, logout
-from django.conf import settings
-from sqlite3 import IntegrityError
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect, get_object_or_404
-from account.models import User, Address, UserProfile
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  TemplateView, UpdateView, View)
+from redis import Redis
+
+from account.models import Address, User, UserProfile
 from config import settings
+from order.models import Order
+
+from .logging import log
+
+logging.basicConfig(level=logging.DEBUG, filename="account/authentication_system_logs.log", filemode="a")
 
 # ---- redis setup ----
-r = Redis(host='redis', port=6379, decode_responses=True)
+# r = Redis(host='redis', port=6379, decode_responses=True)
+r = Redis(host='localhost', port=6379, decode_responses=True)
+
 
 # ---- signup view ----
 class SignupView(View):
@@ -33,6 +43,7 @@ class SignupView(View):
 
     template_name = 'signup.html'
 
+    @log
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
@@ -62,7 +73,6 @@ class SignupView(View):
 
             otp_code = ''.join([str(randint(0, 9)) for _ in range(6)])
             r.set(name=str(user.id), value=otp_code)
-            print(otp_code)
             subject = 'Verification code'
             message = f'Your verification code is: {otp_code}'
             email_from = settings.EMAIL_HOST_USER
@@ -78,13 +88,13 @@ class SignupView(View):
             messages.error(request, 'An error occurred')
 
 
-
 # ---- sign in with email view ----
 class SignInWithEmail(View):
 
     def get(self, request):
         return render(request, 'login_with_email.html')
 
+    @log
     def post(self, request):
         email = request.POST.get('email')
 
@@ -92,7 +102,7 @@ class SignInWithEmail(View):
             print('nenvekjrnfilwjkervnekjrnfveikjrnvekjdrnfd ')
             user = User.objects.get(email=email)
             otp_code = ''.join([str(randint(0, 9)) for _ in range(6)])
-            print(otp_code)
+            logging.info(otp_code)
             r.set(name=f"{user.id}", value=f"{otp_code}")
             subject = 'Verification code'
             message = f'Your verification code is: {otp_code}'
@@ -108,8 +118,7 @@ class SignInWithEmail(View):
             return render(request, 'login_with_email.html')
 
 
-
-#---- signin with username and password ----
+# ---- signin with username and password ----
 class SignInWithUsernameAndPassword(View):
 
     def get(self, request):
@@ -119,7 +128,6 @@ class SignInWithUsernameAndPassword(View):
         try:
             username = request.POST['username']
             user = User.objects.get(username=username)
-            print(request)
             login(request, user)
             user.is_verified = True
             messages.success(request, 'logged in successfully', 'success')
@@ -129,8 +137,7 @@ class SignInWithUsernameAndPassword(View):
             return render(request, 'login_with_username_and_password.html')
 
 
-
-#---- verify email and otp to authenticate ----
+# ---- verify email and otp to authenticate ----
 def verify_email(request, email):
     if request.method == 'POST':
         user_otp = request.POST.get('otp_code')
@@ -139,8 +146,6 @@ def verify_email(request, email):
         if otp == user_otp:
             user.is_active = True
             user.save()
-            password = r.get(user.username)
-            print(user.username, password)
             login(request, user)
             return redirect('products')
         else:
@@ -149,8 +154,7 @@ def verify_email(request, email):
         return render(request, 'verify_email.html')
 
 
-
-#---- logout user view ----
+# ---- logout user view ----
 class LogoutUser(View):
     def get(self, request):
         if request.user.is_authenticated:
@@ -159,8 +163,7 @@ class LogoutUser(View):
         return redirect('products')
 
 
-
-#---- user profile view for displaying user's information and addresses  ----
+# ---- user profile view for displaying user's information and addresses  ----
 class UserProfileView(DetailView):
     model = User
     template_name = 'profile.html'
@@ -176,8 +179,7 @@ class UserProfileView(DetailView):
         return context
 
 
-
-#---displaying all user's addresses in address page ----
+# ---displaying all user's addresses in address page ----
 class AllUsersAddresses(ListView):
     model = Address
     template_name = 'users_addresses.html'
@@ -191,11 +193,9 @@ class AllUsersAddresses(ListView):
         return context
 
 
-
 # ---- login choice (login with email or login with username) ----
 class LoginChoice(TemplateView):
     template_name = 'login_choice.html'
-
 
 
 # ---- address view for displaying all user's addresses ----
@@ -210,8 +210,7 @@ class AddAddressView(CreateView):
         return super().form_valid(form)
 
 
-
-#---- delete address view -----
+# ---- delete address view -----
 class DeleteAddressView(LoginRequiredMixin, DeleteView):
     model = Address
     success_url = reverse_lazy('delete_addresses_success')
@@ -221,8 +220,7 @@ class DeleteAddressView(LoginRequiredMixin, DeleteView):
         return self.request.user.costumer_address.all()
 
 
-
-#---- change profile view -----
+# ---- change profile view -----
 class ChaneProfileView(UpdateView):
     model = UserProfile
     fields = ['first_name', 'last_name', 'gender']
@@ -235,8 +233,7 @@ class ChaneProfileView(UpdateView):
         return reverse_lazy('profile', kwargs={'pk': self.object.user.pk})
 
 
-
-#---- views related to reset password ----
+# ---- views related to reset password ----
 
 
 class ResetPasswordView(views.PasswordResetView):
@@ -258,14 +255,23 @@ class UserPasswordResetCompleteView(views.PasswordResetCompleteView):
     template_name = 'reset_password/password_reset_complete.html'
 
 
-
-
 class AdminPannel(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser == False:
+        if not request.user.is_superuser:
             return HttpResponse('nigga fuck that child')
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
         return HttpResponse('my admin nigga')
+
+
+class UserOrdersView(ListView):
+    model = Order
+    template_name = 'profile_orders.html'
+    context_object_name = 'user_orders'
+
+    def get_queryset(self):
+        return Order.objects.filter(customer_id=self.request.user.id)
+
+
