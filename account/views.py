@@ -284,3 +284,9 @@ class UserOrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
         return context
+
+
+class DeleteUserOrder(DeleteView):
+    model = Order
+    success_url = reverse_lazy('products')
+    template_name = 'user_orders_detail.html'
