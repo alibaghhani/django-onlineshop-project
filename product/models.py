@@ -3,7 +3,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 
 from account.models import User
-from core.models import TimeStampMixin, LogicalDeleteMixin
+from core.models import LogicalDeleteMixin, TimeStampMixin
 
 
 class Product(TimeStampMixin, LogicalDeleteMixin):
@@ -35,7 +35,7 @@ class Product(TimeStampMixin, LogicalDeleteMixin):
         else:
             return False
 
-    # override save method to create slug fr products
+    # override save method to create slug for products
     def save(self, *args, **kwargs):
         self.slug = f"{self.name.replace(' ', '-')}-{self.id}-{self.category}"
         super(Product, self).save(*args, **kwargs)
@@ -94,8 +94,7 @@ class Discount(TimeStampMixin, LogicalDeleteMixin):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_discount')
 
 
-
-class DiscountCode(models.Model):
+class DiscountCode(TimeStampMixin):
     """
     discount coupon model
 
@@ -103,9 +102,14 @@ class DiscountCode(models.Model):
         code = models.CharField(max_length=8, blank=True, null=True, unique=True)
 
     """
-
+    DISCOUNT_CHOICES = (
+        ('percentage', '%'),
+        ('cash', '$')
+    )
+    type_of_discount = models.CharField(choices=DISCOUNT_CHOICES, max_length=250, null=True, blank=True)
+    discount = models.PositiveIntegerField(blank=True, null=True)
     code = models.CharField(max_length=8, blank=True, null=True, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='user_discount_code')
 
     def __str__(self):
-        return "%s" % (self.code)
+        return "%s" % self.code

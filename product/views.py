@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
+
 from order.forms import CartItemQuantityForm
-from .models import Product, Image, Category
+
+from .models import Category, Image, Product
 
 
 # product list view for displaying products
