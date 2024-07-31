@@ -1,5 +1,5 @@
 
-#Django online shop project
+Django online shop project
 
 this is a django REST project using task queue and Redis as cache database and broker, Postgresql and main database, docker for deployment, selenium and custom settings.
 
